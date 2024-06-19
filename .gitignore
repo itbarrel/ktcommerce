@@ -35,6 +35,7 @@ local.properties
 !debug.keystore
 *.env
 .bundle
+.yarn
 
 # node.js
 #
