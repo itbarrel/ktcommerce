@@ -1,22 +1,12 @@
 import React from 'react'
-import {
-  SafeAreaView
-} from 'react-native'
 import AppNavigator from './navigation/AppNavigator'
-
-import {
-  Colors
-} from 'react-native/Libraries/NewAppScreen'
+import { NavigationContainer } from '@react-navigation/native'
 
 function App () {
-  const backgroundStyle = {
-    backgroundColor: Colors.lighter
-  }
-
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <NavigationContainer>
       <AppNavigator/>
-    </SafeAreaView>
+    </NavigationContainer>
   )
 }
 

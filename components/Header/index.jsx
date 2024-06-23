@@ -1,19 +1,19 @@
 import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import { Icon } from '@rneui/themed'
+// import { Icon } from '@rneui/themed'
 
 const Header = () => {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.leftIcon}>
-        <Icon name="menu" type="material" color="#fff" />
+        {/* <Icon name="menu" type="material" color="#fff" /> */}
       </View>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>My App</Text>
         <Text style={styles.subtitle}>Welcome</Text>
       </View>
       <View style={styles.rightIcon}>
-        <Icon name="search" type="material" color="#fff" />
+        {/* <Icon name="search" type="material" color="#fff" /> */}
       </View>
     </View>
   )

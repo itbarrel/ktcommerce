@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList } from 'react-native'
-import Header from '../Header'
 import { fetchProducts } from '../../services/product'
 
 import ProductCard from './card'
@@ -30,14 +29,11 @@ const CardListing = () => {
   }
 
   return (
-    <>
-      <Header/>
-      <FlatList
-        data={products}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
-    </>
+    <FlatList
+      data={products}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id.toString()}
+    />
   )
 }
 
