@@ -13,7 +13,7 @@ const LoginScreen = () => {
 
   return (
     <SafeAreaView>
-      <View style={{ backgroundColor: 'orange' }}>
+      <View>
         <View style={styles.container}>
           <View style={styles.Login}>
             <Text style={styles.title}>Login Screen</Text>

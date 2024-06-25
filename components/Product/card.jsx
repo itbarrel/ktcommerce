@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
+import { View, Text, StyleSheet, Image } from 'react-native'
 
 const ProductCard = ({ item }) => {
   const image = item.images.length ? item.images[0]?.src : 'https://randomuser.me/api/portraits/lego/1.jpg'
@@ -52,7 +52,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey'
   },
   textSection: {
-    flex: 2
+    flex: 2,
+    paddingLeft: 10
   },
   image: {
     width: 100,

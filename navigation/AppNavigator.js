@@ -1,6 +1,7 @@
 import React from 'react'
 import HomeScreen from '../screens/Home/HomeScreen'
 import LoginScreen from '../screens/LoginScreen'
+import ProductShowScreen from '../screens/ProductShowScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Header from '../components/Header'
 const Tab = createBottomTabNavigator()
@@ -13,7 +14,7 @@ const AppNavigator = () => {
         options={{
           header: ({ navigation }) => <Header navigation={navigation}/>
         }}/>
-      <Screen name="Settings" component={LoginScreen} />
+      <Screen name="Settings" component={ProductShowScreen} />
     </Navigator>
   )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import CardListing from '../../components/Product'
+import CardListing from '../../ios/ktcommerceTests'
 
 const HomeScreen = () => {
   return (
