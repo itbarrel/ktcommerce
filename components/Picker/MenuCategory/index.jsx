@@ -5,36 +5,39 @@ import {
 } from 'react-native'
 
 import { fetchMenus } from '../../../services/product'
-import CategoryCard from './Card'
+import CategoryCard from './card'
 
-const MultipleEventTypePicker = () => {
+const MenuCategoryPicker = ({ all, selection, categoryId, setCategoryId }) => {
   const [categories, setCategories] = useState([])
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null)
+
+  const allFilter = {
+    id: 0,
+    title: 'All'
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetchMenus()
-        setCategories(res.items)
+        const response = await fetchMenus()
+        setCategories(all ? [allFilter, ...response.items] : response.items)
       } catch (error) {
         console.error('Error fetching product:', error)
       }
     }
 
     fetchData()
-  }, [])
+  }, [all])
 
   const handleSelect = (id) => {
-    setSelectedCategoryId(id)
+    setCategoryId(id)
   }
-
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       <View style={styles.buttonContainer}>
         {categories.map((item) => (
           <CategoryCard key={item.ID}
             item={{ id: item.ID, title: item.title }}
-            isSelected={item.ID === selectedCategoryId}
+            isSelected={item.ID === categoryId}
             onSelect={() => handleSelect(item.ID)}
           />
         ))}
@@ -55,4 +58,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default MultipleEventTypePicker
+export default MenuCategoryPicker

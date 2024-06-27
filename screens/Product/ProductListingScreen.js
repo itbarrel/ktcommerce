@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Searchbar } from 'react-native-paper'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
-import MultipleEventTypePicker from '../components/Picker/MultipleCategoryPicker'
-import CardListing from '../components/Product'
+import MenuCategoryPicker from '../../components/Picker/MenuCategory'
+import ProductListing from '../../components/Product'
 
-const ProductShowScreen = () => {
-  const [searchQuery, setSearchQuery] = React.useState('')
+const ProductListingScreen = () => {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [categoryId, setCategoryId] = useState(null)
 
   return (
     <>
@@ -21,17 +22,16 @@ const ProductShowScreen = () => {
         <TouchableOpacity style={styles.filterButton}>
           <Text style={styles.filterButtonText}>Filter</Text>
         </TouchableOpacity>
-        <View>
-
-        </View>
-
+        <View></View>
       </View>
       <View>
-        <MultipleEventTypePicker/>
-
+        <MenuCategoryPicker
+          all={true} selection={false}
+          categoryId={categoryId} setCategoryId={setCategoryId}
+        />
       </View>
       <View>
-        <CardListing/>
+        <ProductListing categoryId={categoryId}/>
       </View>
     </>
   )
@@ -64,4 +64,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ProductShowScreen
+export default ProductListingScreen

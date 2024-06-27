@@ -1,9 +1,9 @@
 import React from 'react'
-import CardListing from '../../ios/ktcommerceTests'
+import ProductListing from '../../components/Product'
 
 const HomeScreen = () => {
   return (
-    <CardListing/>
+    <ProductListing/>
   )
 }
 
