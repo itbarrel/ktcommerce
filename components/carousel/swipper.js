@@ -1,6 +1,7 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
-import Carousel from 'pinar' // Ensure correct import
+import { View, StyleSheet, Image } from 'react-native'
+import { moderateScale } from 'react-native-size-matters'
+import Carousel from 'pinar'
 
 const Swipper = () => {
   const slideItems = [
@@ -40,7 +41,7 @@ const Swipper = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: moderateScale(30),
     justifyContent: 'center',
     alignItems: 'center'
   },

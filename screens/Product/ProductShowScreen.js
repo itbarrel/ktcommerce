@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import Swipper from '../../components/carousel/swipper'
-import CartScreen from '../CartScreen'
+import CartProductScreen from '../CartProductScreen'
 
 const ProductShowScreen = () => {
   return (
@@ -11,7 +11,7 @@ const ProductShowScreen = () => {
       </View>
 
       <View style={styles.anotherComponent}>
-        <CartScreen/>
+        <CartProductScreen/>
       </View>
     </View>
   )

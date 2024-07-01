@@ -6209,11 +6209,6 @@ react-is@^17.0.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-native-app-intro-slider@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmjs.org/react-native-app-intro-slider/-/react-native-app-intro-slider-4.0.4.tgz"
-  integrity sha512-Zkjaol6X3BbZkHUpVDj2LjdidpS6rCgKi0fx80xgGKa0pHxBRd4swWTv2bHnnvu5k1/HXwYk0mY2TbK+2jHl5w==
-
 react-native-paper@^5.12.3:
   version "5.12.3"
   resolved "https://registry.npmjs.org/react-native-paper/-/react-native-paper-5.12.3.tgz"
@@ -6247,6 +6242,11 @@ react-native-simple-toast@^3.3.1:
   version "3.3.1"
   resolved "https://registry.npmjs.org/react-native-simple-toast/-/react-native-simple-toast-3.3.1.tgz"
   integrity sha512-5SbAvZpzjSHNkMGbO1cr/7kg/oHZEVZbgeqC+6FtYTtvBbkRMbEaUIfiD1rvghbxZrJB783Y/mHRDUab2ogTqA==
+
+react-native-size-matters@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.npmjs.org/react-native-size-matters/-/react-native-size-matters-0.4.2.tgz"
+  integrity sha512-DKE3f/sdcozd24oASgkP1iGg+YU3HoajRa5k3a4wkRzpiqREq8SGX12Y5zBgAt/8IivLQoTMYkyQu1/Giuy+zQ==
 
 react-native-vector-icons@*, react-native-vector-icons@^10.1.0:
   version "10.1.0"

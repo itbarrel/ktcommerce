@@ -1,10 +1,10 @@
 import React from 'react'
 import ProfileCard from '../components/Profile'
 
-const profileScreen = () => {
+const ProfileScreen = () => {
   return (
     <ProfileCard/>
   )
 }
 
-export default profileScreen
+export default ProfileScreen

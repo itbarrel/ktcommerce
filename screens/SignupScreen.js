@@ -3,9 +3,11 @@ import { Text, SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Imag
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 
-const LoginScreen = () => {
-  const [text, setText] = useState('')
-  const [number, setNumber] = useState('')
+const SignUpScreen = () => {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [ConfirmPassword, setConfirmPassword] = useState('')
   const [passwordVisible, setPasswordVisible] = useState(false)
 
   const togglePasswordVisibility = () => {
@@ -23,15 +25,21 @@ const LoginScreen = () => {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              onChangeText={setText}
-              placeholder="UserName"
-              value={text}
+              onChangeText={setName}
+              placeholder="Your Name"
+              value={name}
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={setEmail}
+              placeholder="Your Email"
+              value={email}
             />
             <View style={styles.passwordContainer}>
               <TextInput
                 style={styles.passwordInput}
-                onChangeText={setNumber}
-                value={number}
+                onChangeText={setPassword}
+                value={password}
                 placeholder="Password"
                 secureTextEntry={!passwordVisible}
               />
@@ -42,16 +50,19 @@ const LoginScreen = () => {
                 <Icon name={passwordVisible ? 'visibility' : 'visibility-off'} size={moderateScale(24)} color="black" />
               </TouchableOpacity>
             </View>
+
+            <TextInput
+              style={styles.input}
+              onChangeText={setConfirmPassword}
+              placeholder="Confirm Password"
+              value={ConfirmPassword}
+            />
+
           </View>
-
-          <TouchableOpacity style={styles.forgotContainer}>
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
           <TouchableOpacity>
             <View style={styles.buttonContainerHold}>
               <View style={styles.buttonContainer}>
-                <Text style={styles.text}>SIGN IN</Text>
+                <Text style={styles.text}>SIGN Up</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -65,7 +76,7 @@ const styles = StyleSheet.create({
   input: {
     height: moderateScale(60),
     width: '85%',
-    margin: moderateScale(12),
+    margin: moderateScale(5),
     borderWidth: 1,
     padding: moderateScale(10),
     borderRadius: moderateScale(20)
@@ -137,4 +148,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default LoginScreen
+export default SignUpScreen
