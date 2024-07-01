@@ -1,36 +1,17 @@
 import React from 'react'
 import { View, StyleSheet, Image } from 'react-native'
-import { moderateScale } from 'react-native-size-matters'
+import { moderateScale, verticalScale } from 'react-native-size-matters'
 import Carousel from 'pinar'
 
-const Swipper = () => {
-  const slideItems = [
-    {
-      key: '1',
-      image: require('../../assets/images/images.jpeg'), // Replace with your image path
-      backgroundColor: '#a3c9a8'
-    },
-    {
-      key: '2',
-      image: require('../../assets/images/images.jpeg'), // Replace with your image path
-      backgroundColor: '#84b59f'
-    },
-    {
-      key: '3',
-      image: require('../../assets/images/images.jpeg'), // Replace with your image path
-      backgroundColor: '#84b59f'
-    }
-
-  ]
-
+const Swipper = ({ product }) => {
   return (
     <View style={styles.container}>
       <Carousel
         showsControls={false}
       >
-        {slideItems.map(item => (
-          <View key={item.key} style>
-            <Image source={item.image} style={styles.image} />
+        {product?.images?.map((item, index) => (
+          <View key={index} style>
+            <Image source={{ uri: item.src }} style={styles.image} />
           </View>
         ))}
       </Carousel>
@@ -68,6 +49,10 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     fontSize: 48,
     fontWeight: 'bold'
+  },
+  image: {
+    height: verticalScale(200),
+    width: 'auto'
   }
 
 })

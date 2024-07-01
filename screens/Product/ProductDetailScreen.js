@@ -1,17 +1,35 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import Swipper from '../../components/carousel/swipper'
+import { RetrieveProduct } from '../../services/product'
+
 import CartProductScreen from '../CartProductScreen'
 
-const ProductShowScreen = () => {
+const ProductDetailScreen = (props) => {
+  const [product, setProduct] = useState({})
+
+  const id = props.route.params.id
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const id = props.route.params.id
+        const res = await RetrieveProduct(id)
+        setProduct(res)
+      } catch (error) {
+        console.error('Error fetching product:', error)
+      }
+    }
+    fetchData()
+  }, [id])
   return (
     <View style={styles.container}>
       <View style={styles.carouselContainer}>
-        <Swipper />
+        <Swipper product={product} />
       </View>
 
       <View style={styles.anotherComponent}>
-        <CartProductScreen/>
+        <CartProductScreen product={product} />
       </View>
     </View>
   )
@@ -38,4 +56,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ProductShowScreen
+export default ProductDetailScreen

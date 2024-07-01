@@ -4,7 +4,7 @@ import { Rating } from 'react-native-ratings'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 
-const CartProductScreen = () => {
+const CartProductScreen = ({ product }) => {
   const sizes = [
     { id: '1', size: 'S' },
     { id: '2', size: 'M' },
@@ -59,7 +59,7 @@ const CartProductScreen = () => {
         <View style={styles.container}>
           <View style={styles.text_container}>
             <Text style={styles.text}>Orange Summer</Text>
-            <Text style={styles.text_price}>$97</Text>
+            <Text style={styles.text_price}>DKK :{product.price}</Text>
           </View>
           <View style={styles.text_container}>
             <Rating
@@ -96,11 +96,12 @@ const CartProductScreen = () => {
             </View>
             <View>
               <View>
-                <Text style={styles.inner_text}>Discription</Text>
+                {
+                  product.description &&
+                  <Text style={styles.inner_text}>Discription</Text>
+                }
                 <Text style={styles.loremText}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-          nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  {product.description}
                 </Text>
               </View>
             </View>
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   text_price: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: '600',
     textAlign: 'right'
   },

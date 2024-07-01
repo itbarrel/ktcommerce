@@ -10,7 +10,6 @@ const ProductListing = ({ categoryId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(categoryId, '////////////////////')
         const res = await fetchProducts({ category: categoryId })
         setProducts(res)
       } catch (error) {

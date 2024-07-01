@@ -1,33 +1,41 @@
 import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const ProductCard = ({ item }) => {
+  const navigation = useNavigation()
+  const handlePress = () => {
+    navigation.navigate('ProductDetailScreen', { id: item.id })
+  }
   const image = item.images.length ? item.images[0]?.src : 'https://randomuser.me/api/portraits/lego/1.jpg'
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <View style={styles.imageSection}>
-          <Image
-            source={{ uri: image }}
-            style={styles.image}
-          />
-        </View>
-        <View style={styles.textSection}>
-          <Text style={styles.text1}>
-            {item.categories.map(category => `${category.name}, `)}
-          </Text>
-          <Text style={styles.text1}>
-            {item.name}
-          </Text>
-          <Text style={styles.text2}>
+    <TouchableOpacity onPress={handlePress}>
+      <View style={styles.container}>
+        <View style={styles.card}>
+          <View style={styles.imageSection}>
+            <Image
+              source={{ uri: image }}
+              style={styles.image}
+            />
+          </View>
+          <View style={styles.textSection}>
+            <Text style={styles.text1}>
+              {item.categories.map(category => `${category.name}, `)}
+            </Text>
+            <Text style={styles.text1}>
+              {item.name}
+            </Text>
+            <Text style={styles.text2}>
             DK {item.price}/-
-          </Text>
-          <Text style={styles.text2}>
+            </Text>
+            <Text style={styles.text2}>
             Total Sales: {item.total_sales}
-          </Text>
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 

@@ -51,6 +51,7 @@ const CartCard = () => {
             <QuantitySelector />
           </View>
         </View>
+
         <View style={styles.icon}>
           <Icon
             name='delete'
