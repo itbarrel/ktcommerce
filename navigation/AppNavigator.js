@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import SplashScreen from '../screens/SplashScreen'
 import SignUpScreen from '../screens/SignupScreen'
 import HomeScreen from '../screens/Home/HomeScreen'
 import ProductListingScreen from '../screens/Product/ProductListingScreen'
 import ProductListing from '../components/Product'
 import LoginScreen from '../screens/LoginScreen'
+import { Image, View, StyleSheet } from 'react-native'
 import CartCard from '../components/cart/card'
 import CartListing from '../components/cart'
 import PaymentScreen from '../screens/paymentScreen'
@@ -34,17 +36,54 @@ const TabNavigator = () => (
       }
     })}
   >
-    <Tab.Screen name="Home" component={ProductListingScreen} />
-    <Tab.Screen name="Settings" component={LoginScreen} />
-    <Tab.Screen name="Profile" component={CartListing} />
+    <Tab.Screen name="Home" component={HomeScreen} />
+    <Tab.Screen name="Profile" component={ProfileScreen} />
   </Tab.Navigator>
 )
 
 const AppNavigator = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
+    <Stack.Screen
+      name="SplashScreen"
+      component={SplashScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Tabs"
+      component={TabNavigator}
+      options={{ headerShown: true }}
+    />
+    <Stack.Screen name="ProductListingScreen" component={ProductListingScreen}
+      options={{
+        headerTitle: () => (
+          <View style={styles.container}>
+            <Image
+              source={require('../assets/images/logo_sort.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
+        )
+      }}
+
+    />
+    <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+    <Stack.Screen name="LoginScreen" component={LoginScreen} />
+    <Stack.Screen name="CartListing" component={CartListing} />
+    <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
     <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
   </Stack.Navigator>
 )
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex'
+  },
+  logo: {
+    width: 100,
+    height: 100
+  }
+})
 
 export default AppNavigator

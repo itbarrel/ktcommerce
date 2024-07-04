@@ -12,16 +12,16 @@ const MenuCategoryPicker = ({ all, selection, categoryId, setCategoryId }) => {
 
   const allFilter = {
     id: 0,
-    title: 'All'
+    name: 'All'
   }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetchMenus()
-        setCategories(all ? [allFilter, ...response.items] : response.items)
+        setCategories(all ? [allFilter, ...response] : response)
       } catch (error) {
-        console.error('Error fetching product:', error)
+        console.error('Error>>>>>>>>>>> fetching product:', error)
       }
     }
 
@@ -36,7 +36,7 @@ const MenuCategoryPicker = ({ all, selection, categoryId, setCategoryId }) => {
       <View style={styles.buttonContainer}>
         {categories.map((item) => (
           <CategoryCard key={item.ID}
-            item={{ id: item.ID, title: item.title }}
+            item={item} // Pass the entire item object
             isSelected={item.ID === categoryId}
             onSelect={() => handleSelect(item.ID)}
           />

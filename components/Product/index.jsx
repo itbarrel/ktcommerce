@@ -4,13 +4,13 @@ import { fetchProducts } from '../../services/product'
 
 import ProductCard from './card'
 
-const ProductListing = ({ categoryId }) => {
+const ProductListing = ({ categoryId, searchQuery }) => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetchProducts({ category: categoryId })
+        const res = await fetchProducts({ category: categoryId, search: searchQuery })
         setProducts(res)
       } catch (error) {
         console.error('Error fetching product:', error)
@@ -18,7 +18,7 @@ const ProductListing = ({ categoryId }) => {
     }
 
     fetchData()
-  }, [categoryId])
+  }, [categoryId, searchQuery])
 
   return (
     <FlatList
