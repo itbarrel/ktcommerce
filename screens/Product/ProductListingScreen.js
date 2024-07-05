@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import { Searchbar } from 'react-native-paper'
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image } from 'react-native'
 import MenuCategoryPicker from '../../components/Picker/MenuCategory'
 import ProductListing from '../../components/Product'
-import { ScrollView } from 'react-native-gesture-handler'
+
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const ProductListingScreen = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryId, setCategoryId] = useState(null)
+  const [viewMode, setViewMode] = useState('list')
 
   return (
     <>
@@ -21,9 +23,10 @@ const ProductListingScreen = () => {
           />
         </View>
         <TouchableOpacity style={styles.filterButton}>
-          <Text style={styles.filterButtonText}>
-            filter
-          </Text>
+          <Image
+            source={require('../../assets/images/slider.png')}
+            style={styles.filterImage}
+          />
         </TouchableOpacity>
       </View>
 
@@ -35,12 +38,37 @@ const ProductListingScreen = () => {
           setCategoryId={setCategoryId}
         />
       </View>
-
-      <ScrollView>
-        <View style={styles.productContainer}>
-          <ProductListing categoryId={categoryId} searchQuery={searchQuery} />
+      <View style={styles.grid_conatiner}>
+        <View>
+          <Text style={styles.popular_text}>
+            Popular
+          </Text>
         </View>
-      </ScrollView>
+        <View style={{ flexDirection: 'row' }}>
+          <View>
+            <TouchableOpacity onPress={() => setViewMode('list')}>
+              <Icon
+                name='list'
+                size={30}
+                color={viewMode === 'list' ? 'black' : 'gray'}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ paddingHorizontal: 8 }}>
+            <TouchableOpacity onPress={() => setViewMode('grid')}>
+              <Icon
+                name='grid'
+                size={27}
+                color={viewMode === 'grid' ? 'black' : 'gray'}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.productContainer}>
+        <ProductListing categoryId={categoryId} searchQuery={searchQuery} viewMode={viewMode} />
+      </View>
     </>
   )
 }
@@ -53,7 +81,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30
   },
   searchContainer: {
-    flex: 1 // Take remaining space
+    flex: 1
   },
   search: {
     width: '100%'
@@ -64,7 +92,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     paddingHorizontal: 15,
-    borderRadius: 20
+    borderRadius: 50
   },
   filterButtonText: {
     color: 'white',
@@ -75,9 +103,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30
   },
   productContainer: {
-    marginTop: 20,
+    marginTop: 0,
     paddingHorizontal: 30,
-    marginBottom: 10
+    marginBottom: 10,
+    height: '70%'
+  },
+  popular_text: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: '500'
+  },
+  grid_conatiner: {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingHorizontal: 30,
+    padding: 20,
+    justifyContent: 'space-between'
+  },
+  filterImage: {
+    width: 25
   }
 })
 

@@ -5,8 +5,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Card } from 'react-native-paper'
 
 const ProductCard = ({ item }) => {
-  console.log('??????????', item)
-
   const navigation = useNavigation()
 
   const handlePress = () => {
@@ -27,9 +25,6 @@ const ProductCard = ({ item }) => {
               />
             </View>
             <View style={styles.textSection}>
-              {/* <Text style={styles.text1} numberOfLines={3}>
-                {item.categories.map(category => `${category.name}, `)}
-              </Text> */}
               <Text style={styles.text1}>
                 {item.name}
               </Text>

@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
+import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -11,6 +10,7 @@ import ProductListing from '../components/Product'
 import LoginScreen from '../screens/LoginScreen'
 import { Image, View, StyleSheet } from 'react-native'
 import CartCard from '../components/cart/card'
+import GridProductCard from '../components/Product/gridCard'
 import CartListing from '../components/cart'
 import PaymentScreen from '../screens/paymentScreen'
 import ProductDetailScreen from '../screens/Product/ProductDetailScreen'
@@ -71,7 +71,19 @@ const AppNavigator = () => (
     <Stack.Screen name="LoginScreen" component={LoginScreen} />
     <Stack.Screen name="CartListing" component={CartListing} />
     <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
-    <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
+    <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen}
+      options={{
+        headerTitle: () => (
+          <View style={styles.container}>
+            <Image
+              source={require('../assets/images/logo_sort.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
+        )
+      }}
+    />
   </Stack.Navigator>
 )
 const styles = StyleSheet.create({
