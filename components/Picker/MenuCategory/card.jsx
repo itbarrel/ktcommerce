@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet } from 'react-native'
-import { Menu, Button } from 'react-native-paper'
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
+import { Menu } from 'react-native-paper'
+import { moderateScale, verticalScale, scale } from 'react-native-size-matters'
 
 const CategoryCard = ({ item, isSelected, onSelect }) => {
   const [visibleMainMenu, setVisibleMainMenu] = useState(false)
@@ -32,9 +33,12 @@ const CategoryCard = ({ item, isSelected, onSelect }) => {
         visible={visibleMainMenu}
         onDismiss={closeMainMenu}
         anchor={
-          <Button mode="contained" onPress={onSelect && openMainMenu}>
-            {item.name}
-          </Button>
+          <TouchableOpacity onPress={onSelect && openMainMenu} style={styles.invisibleButton}>
+            <Text style={{ color: 'black' }}>
+              {item.name}
+            </Text>
+            <View style={styles.line} />
+          </TouchableOpacity>
         }
       >
         {currentItem?.children?.length > 0 && currentItem?.children?.map((firstChild) => (
@@ -46,18 +50,11 @@ const CategoryCard = ({ item, isSelected, onSelect }) => {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    margin: 10,
-    padding: 10,
-    backgroundColor: 'black',
-    borderRadius: 5,
-    alignItems: 'center'
-  },
   buttonSelected: {
     backgroundColor: 'blue'
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: moderateScale(15),
     color: 'white'
   },
   container: {
@@ -70,9 +67,17 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   iconButton: {
-    marginLeft: -10
+    marginLeft: scale(-10)
+  },
+  line: {
+    height: verticalScale(1),
+    backgroundColor: '#F5F5F5',
+    alignSelf: 'stretch',
+    marginTop: verticalScale(4)
+  },
+  invisibleButton: {
+    padding: moderateScale(10)
   }
-
 })
 
 export default CategoryCard

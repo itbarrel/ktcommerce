@@ -43,16 +43,16 @@ const styles = StyleSheet.create({
   },
   carouselContainer: {
     flex: 1,
-    width: '100%', // Occupy full width
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center'
   },
   anotherComponent: {
     flex: 1,
-    width: '100%', // Occupy full width
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e0e0e0' // Example background color
+    backgroundColor: '#e0e0e0'
   }
 })
 

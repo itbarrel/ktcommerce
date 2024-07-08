@@ -36,7 +36,7 @@ const MenuCategoryPicker = ({ all, selection, categoryId, setCategoryId }) => {
       <View style={styles.buttonContainer}>
         {categories.map((item) => (
           <CategoryCard key={item.ID}
-            item={item} // Pass the entire item object
+            item={item}
             isSelected={item.ID === categoryId}
             onSelect={() => handleSelect(item.ID)}
           />
@@ -48,8 +48,9 @@ const MenuCategoryPicker = ({ all, selection, categoryId, setCategoryId }) => {
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    flexDirection: 'row',
-    display: 'flex'
+    flexDirection: 'column',
+    display: 'flex',
+    alignItems: 'flex-start'
   },
   text: {
     fontSize: 12,

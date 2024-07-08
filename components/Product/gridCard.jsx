@@ -2,9 +2,8 @@ import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Rating } from 'react-native-ratings'
-import { Card } from 'react-native-paper'
-
 const GridProductCard = ({ item }) => {
   const navigation = useNavigation()
 
@@ -42,43 +41,40 @@ const GridProductCard = ({ item }) => {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1
-
   },
-
   imageSection: {
     justifyContent: 'center',
     alignItems: 'center'
   },
   image: {
-    width: 140,
-    height: 200,
-    borderRadius: 20
+    width: moderateScale(140),
+    height: verticalScale(200),
+    borderRadius: moderateScale(20)
   },
   textSection: {
     flex: 1,
     justifyContent: 'center',
-    paddingLeft: 10
+    paddingLeft: moderateScale(10)
   },
   text1: {
-    fontSize: 15,
-    marginBottom: 5,
-    width: 100
+    fontSize: moderateScale(15),
+    marginBottom: verticalScale(5),
+    width: moderateScale(100)
   },
   text2: {
     fontWeight: 'bold',
-    fontSize: 20
+    fontSize: moderateScale(20)
   },
   rating_container: {
     flexDirection: 'row',
     display: 'flex',
     justifyContent: 'space-between',
-    width: 150
+    width: moderateScale(150)
   },
   price: {
-    margin: 8
+    margin: moderateScale(8)
   }
 
 })

@@ -7,7 +7,7 @@ import ProductCard from './card'
 
 const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
   const [products, setProducts] = useState([])
-  const numColumns = 2
+
   useEffect(() => {
     const fetchData = async () => {
       try {

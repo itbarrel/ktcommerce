@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { moderateScale, verticalScale, scale } from 'react-native-size-matters'
 import { Card } from 'react-native-paper'
 
 const ProductCard = ({ item }) => {
@@ -47,10 +48,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   card: {
-    width: 350,
+    width: moderateScale(350),
     height: 'auto',
-    marginTop: 10,
-    borderRadius: 5,
+    marginTop: verticalScale(10),
+    borderRadius: moderateScale(5),
     backgroundColor: 'gray',
     elevation: 2
   },
@@ -63,23 +64,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey'
   },
   image: {
-    width: 160,
-    height: 170
+    width: moderateScale(160),
+    height: verticalScale(170)
   },
   textSection: {
     flex: 1,
     justifyContent: 'center',
-    paddingLeft: 10
+    paddingLeft: moderateScale(10)
   },
   text1: {
-    fontSize: 15,
-    marginBottom: 5,
-    width: 100
+    fontSize: moderateScale(15),
+    marginBottom: verticalScale(5),
+    width: moderateScale(100)
   },
   text2: {
     fontWeight: 'bold',
-    fontSize: 20
+    fontSize: moderateScale(20)
   }
 })
-
 export default ProductCard
