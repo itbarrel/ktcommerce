@@ -28,6 +28,14 @@ const ProductListingScreen = ({ isModalVisible, setModalVisible, toggleModal, cl
           />
         </View>
       </View>
+      <View style={styles.pickerContainer}>
+        <MenuCategoryPicker
+          all={true}
+          selection={false}
+          categoryId={categoryId}
+          setCategoryId={setCategoryId}
+        />
+      </View>
 
       <View style={styles.grid_container}>
         <View>
@@ -77,14 +85,14 @@ const ProductListingScreen = ({ isModalVisible, setModalVisible, toggleModal, cl
       >
         <View style={styles.modalContent}>
           <ScrollView>
-            <View style={styles.pickerContainer}>
+            {/* <View style={styles.pickerContainer}>
               <MenuCategoryPicker
                 all={true}
                 selection={false}
                 categoryId={categoryId}
                 setCategoryId={setCategoryId}
               />
-            </View>
+            </View> */}
           </ScrollView>
         </View>
       </Modal>

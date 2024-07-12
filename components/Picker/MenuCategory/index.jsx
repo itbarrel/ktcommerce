@@ -42,25 +42,19 @@ const MenuCategoryPicker = ({ all, selection, categoryId, setCategoryId }) => {
   }
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <View style={styles.buttonContainer}>
-        {categories.map((item) => (
-          <CategoryCard key={item.ID}
-            item={item}
-            isSelected={item.ID === categoryId}
-            onSelect={() => handleSelect(item.ID)}
-          />
-        ))}
-      </View>
+      {categories.map((item) => (
+        <CategoryCard key={item.ID}
+          item={item}
+          isSelected={item.ID === categoryId}
+          onSelect={() => handleSelect(item.ID)}
+        />
+      ))}
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    flexDirection: 'column',
-    display: 'flex',
-    alignItems: 'flex-start'
-  },
+
   text: {
     fontSize: 12,
     color: 'black'

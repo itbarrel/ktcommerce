@@ -68,11 +68,6 @@ const AppNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Tabs"
-        component={TabNavigator}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
         name="ProductListingScreen"
         component={DummyComponent}
         options={{
@@ -83,14 +78,15 @@ const AppNavigator = () => {
                 style={styles.logo}
                 resizeMode="contain"
               />
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.filterButton}
                 onPress={toggleModal}
               >
                 <Icon name="menu" color="black" size={35} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
-          )
+          ),
+          headerLeft: () => null
         }}
       />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />

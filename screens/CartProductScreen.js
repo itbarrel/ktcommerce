@@ -61,7 +61,7 @@ const CartProductScreen = ({ product }) => {
                   style={styles.dropdown}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
-                    ={styles.textColor}
+                  itemTextStyle={styles.textColor}
                   data={colors}
                   maxHeight={300}
                   labelField="label"
