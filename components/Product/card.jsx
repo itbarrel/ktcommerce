@@ -2,7 +2,8 @@ import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { moderateScale, verticalScale, scale } from 'react-native-size-matters'
+import { moderateScale, verticalScale } from 'react-native-size-matters'
+import Icon from 'react-native-vector-icons/AntDesign'
 import { Card } from 'react-native-paper'
 
 const ProductCard = ({ item }) => {
@@ -13,7 +14,6 @@ const ProductCard = ({ item }) => {
   }
 
   const image = item.images.length ? item.images[0]?.src : 'https://randomuser.me/api/portraits/lego/1.jpg'
-
   return (
     <TouchableOpacity onPress={handlePress}>
       <View style={styles.container}>
@@ -26,13 +26,31 @@ const ProductCard = ({ item }) => {
               />
             </View>
             <View style={styles.textSection}>
-              <Text style={styles.text1}>
-                {item.name}
-              </Text>
+              <View style={styles.icon}>
+                <Text style={styles.text1}>
+                  {item.name}
+                </Text>
+                <Icon
+                  name='hearto'
+                  size={15}
+                  color='black'
+                />
+              </View>
               <Text style={styles.text2}>
                 DK {item.price}/-
               </Text>
-
+              <View style={styles.cart}>
+                <View></View>
+                <View style={styles.shopping_cart} >
+                  <Icon
+                    name='shoppingcart'
+                    size={20}
+                    color='black'
+                  />
+                </View>
+              </View>
+            </View>
+            <View>
             </View>
           </View>
         </Card>
@@ -48,11 +66,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   card: {
-    width: moderateScale(350),
+    width: moderateScale(320),
     height: 'auto',
     marginTop: verticalScale(10),
     borderRadius: moderateScale(5),
-    backgroundColor: 'gray',
+    backgroundColor: 'white',
     elevation: 2
   },
   content: {
@@ -61,25 +79,44 @@ const styles = StyleSheet.create({
   imageSection: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'lightgrey'
+    backgroundColor: 'white'
   },
   image: {
-    width: moderateScale(160),
-    height: verticalScale(170)
+    width: moderateScale(99),
+    height: verticalScale(85)
   },
   textSection: {
     flex: 1,
     justifyContent: 'center',
-    paddingLeft: moderateScale(10)
+    paddingLeft: moderateScale(10),
+    paddingBottom: 10
   },
   text1: {
-    fontSize: moderateScale(15),
+    fontSize: moderateScale(13),
     marginBottom: verticalScale(5),
-    width: moderateScale(100)
+    width: moderateScale(150),
+    paddingRight: 10,
+    color: 'black'
   },
   text2: {
     fontWeight: 'bold',
-    fontSize: moderateScale(20)
+    fontSize: moderateScale(15),
+    paddingLeft: moderateScale(4),
+    color: 'black'
+  },
+  icon: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: verticalScale(195),
+    padding: moderateScale(10)
+  },
+  cart: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    width: verticalScale(185)
   }
+
 })
 export default ProductCard

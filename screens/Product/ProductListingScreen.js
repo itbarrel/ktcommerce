@@ -3,42 +3,30 @@ import { Searchbar } from 'react-native-paper'
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
 import MenuCategoryPicker from '../../components/Picker/MenuCategory'
 import ProductListing from '../../components/Product'
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/Ionicons/'
 import Modal from 'react-native-modal'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { ScrollView } from 'react-native-gesture-handler'
 
-const ProductListingScreen = () => {
+const ProductListingScreen = ({ isModalVisible, setModalVisible, toggleModal, closeModal }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryId, setCategoryId] = useState(null)
   const [viewMode, setViewMode] = useState('list')
-  const [isModalVisible, setModalVisible] = useState(false)
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible)
-  }
-  const closeModal = () => {
-    setModalVisible(false)
-  }
 
   return (
     <>
       <View style={styles.container}>
         <View style={styles.searchContainer}>
           <Searchbar
+
             style={styles.search}
             placeholder="Search"
+            iconColor="black"
+            placeholderTextColor="black"
             onChangeText={setSearchQuery}
             value={searchQuery}
           />
         </View>
-        <TouchableOpacity style={styles.filterButton} onPress={toggleModal}>
-          <Image
-            source={require('../../assets/images/slider.png')}
-            style={styles.filterImage}
-          />
-        </TouchableOpacity>
-
       </View>
 
       <View style={styles.grid_container}>
@@ -57,11 +45,11 @@ const ProductListingScreen = () => {
               />
             </TouchableOpacity>
           </View>
-          <View style={{ paddingHorizontal: 8 }}>
+          <View style={{ paddingHorizontal: 8, paddingTop: 2 }}>
             <TouchableOpacity onPress={() => setViewMode('grid')}>
               <Icon
                 name='grid'
-                size={27}
+                size={25}
                 color={viewMode === 'grid' ? 'black' : 'gray'}
               />
             </TouchableOpacity>
@@ -116,15 +104,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
   search: {
-    width: '100%'
+    width: '100%',
+    backgroundColor: 'white',
+    borderColor: '#f0efee',
+    borderWidth: 1
   },
   filterButton: {
     marginLeft: moderateScale(10),
-    backgroundColor: 'black',
-    height: verticalScale(50),
+    height: verticalScale(40),
     justifyContent: 'center',
     paddingHorizontal: moderateScale(15),
-    borderRadius: verticalScale(50)
+    borderRadius: 5
   },
   filterButtonText: {
     color: 'white',
@@ -136,7 +126,6 @@ const styles = StyleSheet.create({
   },
   productContainer: {
     marginTop: 0,
-    paddingHorizontal: moderateScale(30),
     marginBottom: verticalScale(10),
     height: '70%'
   },
@@ -157,16 +146,18 @@ const styles = StyleSheet.create({
   },
   Modal: {
     margin: 0,
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    zIndex: 0,
+    position: 'relative'
   },
   modalContent: {
     backgroundColor: 'white',
     paddingTop: verticalScale(12),
     display: 'flex',
-    minHeight: verticalScale(600),
+    minHeight: verticalScale(700),
     paddingBottom: verticalScale(20),
     justifyContent: 'flex-start',
-    width: verticalScale(290)
+    width: verticalScale(260)
   }
 })
 

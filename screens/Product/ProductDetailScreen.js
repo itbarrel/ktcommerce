@@ -39,12 +39,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: 'white',
+    width: '100%'
+
   },
   carouselContainer: {
     flex: 1,
     width: '100%',
     justifyContent: 'center',
+    borderColor: '#f0efee',
+    borderWidth: 1,
     alignItems: 'center'
   },
   anotherComponent: {

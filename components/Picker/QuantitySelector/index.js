@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { moderateScale, verticalScale } from 'react-native-size-matters'
 
 const QuantitySelector = () => {
   const [quantity, setQuantity] = useState(1)
@@ -23,23 +24,25 @@ const QuantitySelector = () => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    width: moderateScale(110),
     alignItems: 'center'
   },
   button: {
-    width: 35,
-    height: 25,
+    width: moderateScale(35),
+    height: verticalScale(27),
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ddd'
+    backgroundColor: 'black'
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: 'bold'
   },
   quantity: {
-    marginHorizontal: 5,
-    padding: 5,
-    fontSize: 20
+    marginHorizontal: moderateScale(5),
+    padding: moderateScale(5),
+    fontSize: moderateScale(20),
+    color: 'black'
   }
 
 })

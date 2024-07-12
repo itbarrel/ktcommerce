@@ -1,17 +1,21 @@
 import React from 'react'
-import { View, StyleSheet, Image } from 'react-native'
-import { moderateScale, verticalScale } from 'react-native-size-matters'
+import { View, StyleSheet, Image, Dimensions } from 'react-native'
+import { moderateScale } from 'react-native-size-matters'
 import Carousel from 'pinar'
+
+const { width } = Dimensions.get('window')
 
 const Swipper = ({ product }) => {
   return (
     <View style={styles.container}>
-      <Carousel
-        showsControls={false}
-      >
+      <Carousel style={styles.carousel} showsControls={false}>
         {product?.images?.map((item, index) => (
-          <View key={index} style>
-            <Image source={{ uri: item.src }} style={styles.image} />
+          <View key={index}>
+            <Image
+              source={{ uri: item.src }}
+              style={styles.image}
+              resizeMode="contain"
+            />
           </View>
         ))}
       </Carousel>
@@ -24,37 +28,18 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: moderateScale(30),
     justifyContent: 'center',
-    alignItems: 'center'
-  },
-  slide1: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#a3c9a8'
+    alignSelf: 'center'
   },
-  slide2: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#84b59f'
-  },
-  slide3: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#69a297'
-  },
-  text: {
-    color: '#1f2d3d',
-    opacity: 0.7,
-    fontSize: 48,
-    fontWeight: 'bold'
+  carousel: {
+    width: width - moderateScale(60),
+    maxWidth: '100%'
   },
   image: {
-    height: verticalScale(200),
-    width: 'auto'
+    width: '100%',
+    height: '60%',
+    aspectRatio: 1
   }
-
 })
 
 export default Swipper

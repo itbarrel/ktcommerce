@@ -1,57 +1,28 @@
 import React, { useState } from 'react'
 import QuantitySelector from '../components/Picker/QuantitySelector'
-import { Rating } from 'react-native-ratings'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
+import { Dropdown } from 'react-native-element-dropdown'
 
 const CartProductScreen = ({ product }) => {
-  const sizes = [
-    { id: '1', size: 'S' },
-    { id: '2', size: 'M' },
-    { id: '3', size: 'L' },
-    { id: '4', size: 'XL' }
+  const data = [
+    { label: 'Item 1', value: '1' },
+    { label: 'Item 2', value: '2' },
+    { label: 'Item 3', value: '3' },
+    { label: 'Item 4', value: '4' },
+    { label: 'Item 5', value: '5' }
+
   ]
   const colors = [
-    { id: '5', color: '' },
-    { id: '6', color: '' },
-    { id: '7', color: '' },
-    { id: '8', color: '' }
+    { label: 'Item 1', value: '1' },
+    { label: 'Item 2', value: '2' },
+    { label: 'Item 3', value: '3' },
+    { label: 'Item 4', value: '4' },
+    { label: 'Item 5', value: '5' }
+
   ]
   const [selectedSize, setSelectedSize] = useState(null)
   const [selectedColor, setSelectedColor] = useState(null)
-
-  const handleSelect = (id) => {
-    setSelectedSize(id)
-  }
-  const handleColorSelect = (id) => {
-    setSelectedColor(id)
-  }
-
-  const renderItem = (item) => (
-    <View key={item.id}>
-      <TouchableOpacity onPress={() => handleSelect(item.id)}>
-        <Text style={[
-          styles.button,
-          selectedSize === item.id && styles.buttonSelected
-        ]}>
-          {item.size}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  )
-
-  const renderItemColor = (item) => (
-    <View key={item.id}>
-      <TouchableOpacity onPress={() => handleColorSelect(item.id)}>
-        <Text style={[
-          styles.buttonColor,
-          selectedColor === item.id && { borderColor: 'blue' } // Change border color on selection
-        ]}>
-          {item.color}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  )
 
   return (
     <>
@@ -61,33 +32,46 @@ const CartProductScreen = ({ product }) => {
             <Text style={styles.text}>Orange Summer</Text>
             <Text style={styles.text_price}>DKK :{product.price}</Text>
           </View>
-          <View style={styles.text_container}>
-            <Rating
-              ratingColor='#F0C30E'
-              ratingCount={5}
-              imageSize={25}
-              style={{ paddingVertical: 10 }}
-            />
-          </View>
           <View style={styles.inner_container}>
             <View style={styles.text_container}>
               <Text style={styles.inner_text}>Size</Text>
-              <View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View style={styles.scrollContainer}>
-                    {sizes.map(renderItem)}
-                  </View>
-                </ScrollView>
+              <View style={styles.dropdownContainer}>
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  itemTextStyle={styles.textColor}
+                  data={data}
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Select an item"
+                  value={selectedSize}
+                  labelStyle={styles.labelStyle}
+                  onChange={item => {
+                    setSelectedSize(item.selectedSize)
+                  }}
+                />
               </View>
             </View>
             <View style={styles.text_container}>
               <Text style={styles.inner_text}>Choose a Color</Text>
-              <View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View style={styles.scrollContainer}>
-                    {colors.map(renderItemColor)}
-                  </View>
-                </ScrollView>
+              <View style={styles.dropdownContainer}>
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                    ={styles.textColor}
+                  data={colors}
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="selectedColor"
+                  placeholder="Select an item"
+                  value={selectedColor}
+                  onChange={item => {
+                    setSelectedColor(item.selectedColor)
+                  }}
+                />
               </View>
             </View>
             <View style={styles.text_container}>
@@ -125,7 +109,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: moderateScale(30),
-    backgroundColor: 'gray'
+    backgroundColor: 'white'
   },
 
   text: {
@@ -143,7 +127,8 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   inner_text: {
-    fontSize: 15
+    fontSize: 15,
+    color: '#363636'
   },
   inner_container: {
     marginTop: verticalScale(20)
@@ -153,7 +138,7 @@ const styles = StyleSheet.create({
     height: moderateScale(65),
     borderRadius: 30,
     alignItems: 'center',
-    backgroundColor: '#126881',
+    backgroundColor: '#7BCFE9',
     justifyContent: 'center'
   },
   button_container_hold: {
@@ -190,8 +175,62 @@ const styles = StyleSheet.create({
   },
   loremText: {
     fontSize: 16,
-    lineHeight: 22
+    lineHeight: 22,
+    color: 'black'
+  },
+  dropdownContainer: {
+    width: verticalScale(150)
+  },
+  dropdown: {
+    margin: moderateScale(8),
+    height: verticalScale(35),
+    backgroundColor: 'white',
+    borderRadius: 12,
+    color: 'black',
+    padding: 12,
+    shadowColor: 'black',
+    width: verticalScale(140),
+    shadowOffset: {
+      width: 0,
+      height: 1
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2
+  },
+  icon: {
+    marginRight: 5
+  },
+  item: {
+    padding: 17,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  textItem: {
+    flex: 1,
+    fontSize: 16,
+    color: 'black'
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: 'black'
+
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    color: 'black'
+
+  },
+  labelStyle: {
+    fontSize: 16,
+    textAlign: 'left',
+    color: 'red'
+  },
+  textColor: {
+    color: 'black'
   }
+
 })
 
 export default CartProductScreen

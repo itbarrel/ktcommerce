@@ -42,7 +42,7 @@ const CategoryCard = ({ item, isSelected, onSelect }) => {
         }
       >
         {currentItem?.children?.length > 0 && currentItem?.children?.map((firstChild) => (
-          <Menu.Item onPress={() => checkSubMenu(firstChild)} key={firstChild.ID} title={firstChild?.name} />
+          <Menu.Item style={styles.subMenuContainer} onPress={() => checkSubMenu(firstChild)} key={firstChild.ID} title={firstChild?.name} />
         ))}
       </Menu>
     </View>
@@ -60,11 +60,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    position: 'relative',
+    zIndex: 1000
   },
   subMenuContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    zIndex: 1,
+    marginLeft: 20
   },
   iconButton: {
     marginLeft: scale(-10)
