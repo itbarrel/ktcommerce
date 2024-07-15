@@ -10,6 +10,7 @@ const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
   let page = 1
+
   const fetchData = async (page, oldProducts = []) => {
     try {
       setLoading(true)
@@ -25,6 +26,7 @@ const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
   useEffect(() => {
     setProducts([])
     page = 1
+    console.log('>>>>>>>>>>>>>>>>>>>......', categoryId)
     fetchData(page)
   }, [categoryId, searchQuery])
 

@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { Menu } from 'react-native-paper'
 import { moderateScale, scale } from 'react-native-size-matters'
 
-const CategoryCard = ({ item, isSelected, onSelect }) => {
+const CategoryCard = ({ key, item, isSelected, onSelect }) => {
   const [visibleMainMenu, setVisibleMainMenu] = useState(false)
   const [currentItem, setCurrentItem] = useState(item)
 
@@ -18,7 +18,14 @@ const CategoryCard = ({ item, isSelected, onSelect }) => {
   }
 
   const checkSubMenu = (obj) => {
-    if (!obj?.children || obj?.children.length <= 0) { return }
+    if (!obj?.children || obj?.children.length <= 0) {
+      onSelect(obj.term_id)
+      if (currentItem.term_id !== item.term_id) {
+        setCurrentItem(item)
+      }
+      setVisibleMainMenu(false)
+      return
+    }
     setCurrentItem(obj)
   }
 
@@ -27,23 +34,18 @@ const CategoryCard = ({ item, isSelected, onSelect }) => {
   }, [item.term_id])
 
   return (
-    <View style={styles.container}>
-
+    <View style={styles.container} key={key}>
       <Menu
         visible={visibleMainMenu}
         onDismiss={closeMainMenu}
         anchor={
-          item.children && item.children.length > 0
-            ? (
-              <TouchableOpacity onPress={onSelect && openMainMenu} style={styles.invisibleButton}>
-                {item.children.some((child) => child.children && child.children.length > 0) && (
-                  <Text style={{ color: 'black' }}>
-                    {item.name}
-                  </Text>
-                )}
-              </TouchableOpacity>
-            )
-            : null
+          <TouchableOpacity onPress={openMainMenu} style={styles.invisibleButton}>
+            {item.children.some((child) => child.children && child.children.length > 0) && (
+              <Text style={{ color: 'black' }}>
+                {item.name}
+              </Text>
+            )}
+          </TouchableOpacity>
         }
       >
         {currentItem?.children?.length > 0 && currentItem?.children?.map((firstChild) => (

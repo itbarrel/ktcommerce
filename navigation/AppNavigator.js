@@ -25,14 +25,12 @@ const TabNavigator = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
-        let iconName
-        if (route.name === 'Home') {
-          iconName = 'home'
-        } else if (route.name === 'Settings') {
-          iconName = 'settings'
-        } else if (route.name === 'Profile') {
-          iconName = 'person'
+        const iconMapping = {
+          Home: 'home',
+          Settings: 'settings',
+          Profile: 'person'
         }
+        const iconName = iconMapping[route.name]
 
         return <Icon name={iconName} size={size} color={color} />
       }

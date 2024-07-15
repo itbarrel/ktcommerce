@@ -33,6 +33,7 @@ const MenuCategoryPicker = ({ all, selection, categoryId, setCategoryId }) => {
   const handleSelect = (id) => {
     setCategoryId(id)
   }
+
   if (loading) {
     return (
       <View style={[styles.container, styles.horizontal]}>
@@ -42,11 +43,11 @@ const MenuCategoryPicker = ({ all, selection, categoryId, setCategoryId }) => {
   }
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      {categories.map((item) => (
+      {categories.filter(item => item?.children?.length > 0).map((item) => (
         <CategoryCard key={item.ID}
           item={item}
           isSelected={item.ID === categoryId}
-          onSelect={() => handleSelect(item.ID)}
+          onSelect={handleSelect}
         />
       ))}
     </ScrollView>

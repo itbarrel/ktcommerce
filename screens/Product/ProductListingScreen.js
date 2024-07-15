@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Searchbar } from 'react-native-paper'
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import MenuCategoryPicker from '../../components/Picker/MenuCategory'
 import ProductListing from '../../components/Product'
 import Icon from 'react-native-vector-icons/Ionicons/'
@@ -18,7 +18,6 @@ const ProductListingScreen = ({ isModalVisible, setModalVisible, toggleModal, cl
       <View style={styles.container}>
         <View style={styles.searchContainer}>
           <Searchbar
-
             style={styles.search}
             placeholder="Search"
             iconColor="black"
