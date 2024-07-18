@@ -1,22 +1,18 @@
 import React from 'react'
-import { View, StyleSheet, Image, Dimensions } from 'react-native'
-import { moderateScale } from 'react-native-size-matters'
+import { View, StyleSheet, Image } from 'react-native'
 import Carousel from 'pinar'
-
-const { width } = Dimensions.get('window')
 
 const Swipper = ({ product }) => {
   return (
     <View style={styles.container}>
       <Carousel style={styles.carousel} showsControls={false}>
         {product?.images?.map((item, index) => (
-          <View key={index}>
-            <Image
-              source={{ uri: item.src }}
-              style={styles.image}
-              resizeMode="contain"
-            />
-          </View>
+          <Image
+            key={index}
+            source={{ uri: item.src }}
+            style={styles.image}
+            resizeMode="center"
+          />
         ))}
       </Carousel>
     </View>
@@ -26,19 +22,15 @@ const Swipper = ({ product }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: moderateScale(30),
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center'
   },
   carousel: {
-    width: width - moderateScale(60),
     maxWidth: '100%'
   },
   image: {
-    width: '100%',
-    height: '60%',
-    aspectRatio: 1
+    height: '100%'
   }
 })
 

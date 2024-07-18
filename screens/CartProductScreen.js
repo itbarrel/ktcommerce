@@ -11,6 +11,8 @@ const CartProductScreen = ({ product }) => {
   const colors = product.gpf_data?.color || []
   const sizes = product.gpf_data?.size || []
 
+  console.log(sizes, '????????????///')
+
   const [selectedSize, setSelectedSize] = useState(null)
   const [selectedColor, setSelectedColor] = useState({})
 

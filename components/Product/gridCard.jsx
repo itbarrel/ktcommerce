@@ -19,6 +19,7 @@ const GridProductCard = ({ item }) => {
           <Image
             source={{ uri: image }}
             style={styles.image}
+            resizeMode="center"
           />
         </View>
         <View style={styles.rating_container}>
@@ -35,15 +36,11 @@ const GridProductCard = ({ item }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15
+    padding: moderateScale(10)
   },
-  imageSection: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
+
   image: {
-    width: moderateScale(140),
-    height: verticalScale(180),
+    height: verticalScale(150),
     borderRadius: moderateScale(20)
   },
   textSection: {
