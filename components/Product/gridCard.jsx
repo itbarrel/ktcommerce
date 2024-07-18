@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
-import { Rating } from 'react-native-ratings'
 const GridProductCard = ({ item }) => {
   const navigation = useNavigation()
 
@@ -23,14 +22,7 @@ const GridProductCard = ({ item }) => {
           />
         </View>
         <View style={styles.rating_container}>
-          <View>
-            <Rating
-              ratingColor='#F0C30E'
-              ratingCount={5}
-              imageSize={15}
-              style={{ paddingVertical: 10 }}
-            />
-          </View>
+
           <View style={styles.price}>
             <Text style={{ color: 'black', fontWeight: '500' }}>DKK {item.price}</Text>
           </View>
@@ -51,7 +43,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: moderateScale(140),
-    height: verticalScale(200),
+    height: verticalScale(180),
     borderRadius: moderateScale(20)
   },
   textSection: {

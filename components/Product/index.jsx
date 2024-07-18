@@ -26,7 +26,6 @@ const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
   useEffect(() => {
     setProducts([])
     page = 1
-    console.log('>>>>>>>>>>>>>>>>>>>......', categoryId)
     fetchData(page)
   }, [categoryId, searchQuery])
 

@@ -5,24 +5,14 @@ import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Dropdown } from 'react-native-element-dropdown'
 
 const CartProductScreen = ({ product }) => {
-  const data = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' }
+  const des = product.description
+  const description = des?.replace(/<[^>]+>/g, '')
 
-  ]
-  const colors = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' }
+  const colors = product.gpf_data?.color || []
+  const sizes = product.gpf_data?.size || []
 
-  ]
   const [selectedSize, setSelectedSize] = useState(null)
-  const [selectedColor, setSelectedColor] = useState(null)
+  const [selectedColor, setSelectedColor] = useState({})
 
   return (
     <>
@@ -41,11 +31,11 @@ const CartProductScreen = ({ product }) => {
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
                   itemTextStyle={styles.textColor}
-                  data={data}
+                  data={sizes}
                   maxHeight={300}
                   labelField="label"
                   valueField="value"
-                  placeholder="Select an item"
+                  placeholder={sizes.length === 0 ? 'Not available' : 'Choose a size'}
                   value={selectedSize}
                   labelStyle={styles.labelStyle}
                   onChange={item => {
@@ -66,7 +56,7 @@ const CartProductScreen = ({ product }) => {
                   maxHeight={300}
                   labelField="label"
                   valueField="selectedColor"
-                  placeholder="Select an item"
+                  placeholder={colors.length === 0 ? 'Not available' : 'Choose a color'}
                   value={selectedColor}
                   onChange={item => {
                     setSelectedColor(item.selectedColor)
@@ -82,10 +72,10 @@ const CartProductScreen = ({ product }) => {
               <View>
                 {
                   product.description &&
-                  <Text style={styles.inner_text}>Discription</Text>
+                  <Text style={styles.inner_text}>Description</Text>
                 }
                 <Text style={styles.loremText}>
-                  {product.description}
+                  {description}
                 </Text>
               </View>
             </View>
