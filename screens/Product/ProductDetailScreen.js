@@ -14,8 +14,8 @@ const ProductDetailScreen = (props) => {
     const fetchData = async () => {
       try {
         const id = props.route.params.id
-        const res = await RetrieveProduct(id)
-        setProduct(res)
+        const response = await RetrieveProduct(id)
+        setProduct(response)
       } catch (error) {
         console.error('Error fetching product:', error)
       }

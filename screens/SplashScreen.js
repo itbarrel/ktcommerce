@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react'
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Image } from 'react-native'
 import * as Animatable from 'react-native-animatable'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
@@ -21,7 +21,7 @@ const SplashScreen = () => {
   useFocusEffect(
     useCallback(() => {
       const timer = setTimeout(() => {
-        navigation.navigate('ProductListingScreen')
+        navigation.navigate('TabNavigator', { screen: 'Home' })
       }, 1500)
 
       return () => clearTimeout(timer)

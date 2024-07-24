@@ -12,7 +12,8 @@ import { Image, View, StyleSheet, Text } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import CartCard from '../components/cart/card'
 import GridProductCard from '../components/Product/gridCard'
-import CartListing from '../components/cart'
+import CartCardListing from '../components/cart'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import PaymentScreen from '../screens/paymentScreen'
 import ProductDetailScreen from '../screens/Product/ProductDetailScreen'
 import ProfileScreen from '../screens/ProfileScreen'
@@ -24,20 +25,37 @@ const Stack = createStackNavigator()
 const TabNavigator = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
+      tabBarVisible: true,
       tabBarIcon: ({ focused, color, size }) => {
-        const iconMapping = {
-          Home: 'home',
-          Settings: 'settings',
-          Profile: 'person'
+        let iconName
+        if (route.name === 'Home') {
+          iconName = 'home'
+        } else if (route.name === 'Settings') {
+          iconName = 'settings'
+        } else if (route.name === 'Profile') {
+          iconName = 'person'
         }
-        const iconName = iconMapping[route.name]
-
+        // const iconName = iconMapping[route.name]
         return <Icon name={iconName} size={size} color={color} />
       }
     })}
   >
-    <Tab.Screen name="Home" component={HomeScreen} />
-    <Tab.Screen name="Profile" component={ProfileScreen} />
+    <Tab.Screen name="Home" component={ProductListingScreen}
+      options={{
+        headerTitle: () => (
+          <View style={styles.container}>
+            <Image
+              source={require('../assets/images/logo_sort.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <AntDesign name="shoppingcart" size={20} color="#000" style={styles.icon} />
+          </View>
+        ),
+        headerLeft: () => null
+      }}
+    />
+    <Tab.Screen name="Profile" component={CartCardListing} />
   </Tab.Navigator>
 )
 
@@ -52,7 +70,7 @@ const AppNavigator = () => {
     setModalVisible(false)
   }
 
-  const DummyComponent = () => {
+  const ProductListingComponent = () => {
     return (
       <ProductListingScreen isModalVisible={isModalVisible} setModalVisible={setModalVisible} toggleModal={toggleModal} closeModal={closeModal} />
     )
@@ -65,9 +83,10 @@ const AppNavigator = () => {
         component={SplashScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="TabNavigator" component={TabNavigator} options={{ tabBarVisible: true, headerShown: false }} />
       <Stack.Screen
-        name="ProductListingScreen"
-        component={DummyComponent}
+        name="ProductListing"
+        component={ProductListingComponent}
         options={{
           headerTitle: () => (
             <View style={styles.container}>
@@ -80,7 +99,7 @@ const AppNavigator = () => {
                 style={styles.filterButton}
                 onPress={toggleModal}
               >
-                <Icon name="menu" color="black" size={35} />
+                <Icon name="menu" color='black ' size={35} />
               </TouchableOpacity> */}
             </View>
           ),
@@ -89,7 +108,7 @@ const AppNavigator = () => {
       />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="CartListing" component={CartListing} />
+      <Stack.Screen name="CartListing" component={CartCardListing} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
       <Stack.Screen
         name="ProductDetailScreen"
@@ -106,6 +125,7 @@ const AppNavigator = () => {
           )
         }}
       />
+
     </Stack.Navigator>
   )
 }
@@ -113,7 +133,7 @@ const AppNavigator = () => {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-between',
-    width: verticalScale(240),
+    width: verticalScale(310),
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row'

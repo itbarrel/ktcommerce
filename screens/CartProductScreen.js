@@ -1,20 +1,19 @@
 import React, { useState } from 'react'
 import QuantitySelector from '../components/Picker/QuantitySelector'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Dropdown } from 'react-native-element-dropdown'
+import RenderHTML from 'react-native-render-html'
 
 const CartProductScreen = ({ product }) => {
-  const des = product.description
-  const description = des?.replace(/<[^>]+>/g, '')
-
-  const colors = product.gpf_data?.color || []
-  const sizes = product.gpf_data?.size || []
-
-  console.log(sizes, '????????????///')
+  const { width } = Dimensions.get('window')
+  const colors = product.attributes?.map(att => att.options)[1] || []
+  const sizes = product.attributes?.map(att => att.options)[0] || []
+  const sizesOptions = sizes.map((item) => ({ label: item, value: item }))
+  const colorsOptions = colors.map((item) => ({ label: item, value: item }))
 
   const [selectedSize, setSelectedSize] = useState(null)
-  const [selectedColor, setSelectedColor] = useState({})
+  const [selectedColor, setSelectedColor] = useState(null)
 
   return (
     <>
@@ -33,15 +32,15 @@ const CartProductScreen = ({ product }) => {
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
                   itemTextStyle={styles.textColor}
-                  data={sizes}
+                  data={sizesOptions}
                   maxHeight={300}
                   labelField="label"
                   valueField="value"
-                  placeholder={sizes.length === 0 ? 'Not available' : 'Choose a size'}
+                  placeholder={sizes.length === 0 ? 'Not available' : 'Choose size'}
                   value={selectedSize}
                   labelStyle={styles.labelStyle}
                   onChange={item => {
-                    setSelectedSize(item.selectedSize)
+                    setSelectedSize(item.value)
                   }}
                 />
               </View>
@@ -54,14 +53,14 @@ const CartProductScreen = ({ product }) => {
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
                   itemTextStyle={styles.textColor}
-                  data={colors}
-                  maxHeight={300}
+                  data={colorsOptions}
+                  maxHeight={100}
                   labelField="label"
-                  valueField="selectedColor"
-                  placeholder={colors.length === 0 ? 'Not available' : 'Choose a color'}
+                  valueField="value"
+                  placeholder={colors.length === 0 ? 'Not available' : 'Choose color'}
                   value={selectedColor}
                   onChange={item => {
-                    setSelectedColor(item.selectedColor)
+                    setSelectedColor(item.value)
                   }}
                 />
               </View>
@@ -72,13 +71,17 @@ const CartProductScreen = ({ product }) => {
             </View>
             <View>
               <View>
-                {
-                  product.description &&
-                  <Text style={styles.inner_text}>Description</Text>
-                }
-                <Text style={styles.loremText}>
-                  {description}
-                </Text>
+                {product.description && (
+                  <>
+                    <Text style={styles.inner_text}>Description:</Text>
+                    <RenderHTML
+                      contentWidth={width}
+                      source={{ html: product.description }}
+                      baseStyle={styles.htmlContent}
+                    />
+                  </>
+                )}
+
               </View>
             </View>
           </View>
@@ -120,7 +123,8 @@ const styles = StyleSheet.create({
   },
   inner_text: {
     fontSize: 15,
-    color: '#363636'
+    color: '#363636',
+    fontWeight: 'bold'
   },
   inner_container: {
     marginTop: verticalScale(20)
@@ -168,7 +172,9 @@ const styles = StyleSheet.create({
   loremText: {
     fontSize: 16,
     lineHeight: 22,
-    color: 'black'
+    color: 'black',
+    marginTop: 20,
+    width: 10
   },
   dropdownContainer: {
     width: verticalScale(150)
@@ -221,6 +227,11 @@ const styles = StyleSheet.create({
   },
   textColor: {
     color: 'black'
+  },
+  htmlContent: {
+    color: '#000', // Set your desired text color
+    fontSize: 16 // Set your desired font size
+    // Add more styles as needed
   }
 
 })

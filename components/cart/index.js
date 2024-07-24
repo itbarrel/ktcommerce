@@ -1,17 +1,22 @@
 import React from 'react'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
-import { Text, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Text, StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native'
 import CartCard from './card'
 
-const CartListing = () => {
+const CartCardListing = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.cartContainer}>
-        <CartCard />
-      </View>
+      <ScrollView>
+        <View style={styles.cartContainer}>
+          <CartCard />
+          <CartCard />
+          <CartCard />
+
+        </View>
+      </ScrollView>
       <View style={styles.checkoutContainer}>
         <View style={styles.inner_checkout}>
-          <View><Text>SubTotal</Text></View>
+          <View><Text style={styles.total_price}>Subtotal</Text></View>
           <View><Text style={styles.total_price}>$152</Text></View>
         </View>
         <TouchableOpacity>
@@ -31,17 +36,20 @@ const styles = StyleSheet.create({
   },
   cartContainer: {
     flex: 1,
-    paddingTop: verticalScale(20)
+    paddingTop: verticalScale(20),
+    paddingBottom: 30
   },
   checkoutContainer: {
-    padding: verticalScale(25),
-    backgroundColor: 'gray',
+    padding: verticalScale(20),
+    backgroundColor: 'white',
     borderTopLeftRadius: 20,
-    borderTopRightRadius: 20
+    borderTopRightRadius: 20,
+    borderColor: '#f0efee',
+    borderWidth: 3
   },
   buttonContainer: {
     width: '100%',
-    height: moderateScale(55),
+    height: moderateScale(45),
     borderRadius: 30,
     alignItems: 'center',
     backgroundColor: '#126881',
@@ -57,9 +65,10 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(10)
   },
   total_price: {
-    fontSize: 20
+    fontSize: 15,
+    color: 'black'
   }
 
 })
 
-export default CartListing
+export default CartCardListing

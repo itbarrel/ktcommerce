@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Checkbox } from 'react-native-paper'
 import { Text, Image, View, StyleSheet } from 'react-native'
 import QuantitySelector from '../Picker/QuantitySelector'
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import Icon from 'react-native-vector-icons/AntDesign'
 
 const CartCard = () => {
   const [checked, setChecked] = useState(false)
@@ -12,7 +12,7 @@ const CartCard = () => {
   const slideItems = [
     {
       key: '1',
-      image: require('../../assets/images/images.jpeg'), // Replace with your image path
+      image: require('../../assets/images/images.jpeg'),
       backgroundColor: '#a3c9a8'
     }
 
@@ -55,7 +55,8 @@ const CartCard = () => {
         <View style={styles.icon}>
           <Icon
             name='delete'
-            size={25}
+            size={18}
+            color='black'
           />
         </View>
       </View>
@@ -76,8 +77,9 @@ const styles = StyleSheet.create({
     padding: 8
   },
   container: {
-    backgroundColor: '#126881',
-    paddingBottom: 20
+    backgroundColor: 'white',
+    paddingBottom: 20,
+    marginTop: 10
   },
   card: {
     flex: 1,
@@ -96,16 +98,18 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
   image: {
-    width: 130,
-    height: 130,
+    width: 110,
+    height: 110,
     borderRadius: 10
   },
   text1: {
-    fontSize: 15
+    fontSize: 15,
+    color: 'black'
   },
   text2: {
     fontWeight: 'bold',
-    fontSize: 15
+    fontSize: 15,
+    color: 'black'
 
   },
   check_box: {

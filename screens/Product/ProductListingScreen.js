@@ -3,7 +3,8 @@ import { Searchbar } from 'react-native-paper'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import MenuCategoryPicker from '../../components/Picker/MenuCategory'
 import ProductListing from '../../components/Product'
-import Icon from 'react-native-vector-icons/Ionicons/'
+import Icon from 'react-native-vector-icons/Ionicons'
+
 import Modal from 'react-native-modal'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -108,7 +109,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: moderateScale(30)
   },
   searchContainer: {
-    flex: 1
+    flex: 1,
+    flexDirection: 'row'
   },
   search: {
     width: '100%',
@@ -165,6 +167,10 @@ const styles = StyleSheet.create({
     paddingBottom: verticalScale(20),
     justifyContent: 'flex-start',
     width: verticalScale(260)
+  },
+  icon: {
+    marginTop: 20,
+    marginLeft: 5
   }
 })
 
