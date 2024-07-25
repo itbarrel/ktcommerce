@@ -17,13 +17,17 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import PaymentScreen from '../screens/paymentScreen'
 import ProductDetailScreen from '../screens/Product/ProductDetailScreen'
 import ProfileScreen from '../screens/ProfileScreen'
-import { moderateScale, verticalScale } from 'react-native-size-matters'
+import { verticalScale } from 'react-native-size-matters'
+import { useNavigation } from '@react-navigation/native'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
-
-const TabNavigator = () => (
-  <Tab.Navigator
+const TabNavigator = () => {
+  const navigation = useNavigation()
+  const navigateCartscreen = () => {
+    navigation.navigate('CartListing')
+  }
+  return (<Tab.Navigator
     screenOptions={({ route }) => ({
       tabBarVisible: true,
       tabBarIcon: ({ focused, color, size }) => {
@@ -49,18 +53,21 @@ const TabNavigator = () => (
               style={styles.logo}
               resizeMode="contain"
             />
-            <AntDesign name="shoppingcart" size={20} color="#000" style={styles.icon} />
+            <TouchableOpacity onPress={navigateCartscreen}>
+              <AntDesign name="shoppingcart" size={20} color="#000" style={styles.icon} />
+            </TouchableOpacity>
           </View>
         ),
         headerLeft: () => null
       }}
     />
-    <Tab.Screen name="Profile" component={CartCardListing} />
-  </Tab.Navigator>
-)
+    <Tab.Screen name="Profile" component={PaymentScreen} />
+  </Tab.Navigator>)
+}
 
 const AppNavigator = () => {
   const [isModalVisible, setModalVisible] = useState(false)
+  const [addToCart, setaddToCart] = useState([])
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible)
@@ -108,11 +115,25 @@ const AppNavigator = () => {
       />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="CartListing" component={CartCardListing} />
+      <Stack.Screen name="CartListing" component={CartCardListing}
+        initialParams={{ addToCart }}
+        options={{
+          headerTitle: () => (
+            <View style={styles.container}>
+              <Image
+                source={require('../assets/images/logo_sort.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          )
+        }}
+      />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
       <Stack.Screen
         name="ProductDetailScreen"
         component={ProductDetailScreen}
+        initialParams={{ setaddToCart }}
         options={{
           headerTitle: () => (
             <View style={styles.container}>

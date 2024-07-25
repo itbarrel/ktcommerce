@@ -7,8 +7,7 @@ import CartProductScreen from '../CartProductScreen'
 
 const ProductDetailScreen = (props) => {
   const [product, setProduct] = useState({})
-
-  const id = props.route.params.id
+  const { id, setaddToCart } = props?.route?.params
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +28,7 @@ const ProductDetailScreen = (props) => {
       </View>
 
       <View style={styles.anotherComponent}>
-        <CartProductScreen product={product} />
+        <CartProductScreen product={product} setaddToCart={setaddToCart} />
       </View>
     </View>
   )

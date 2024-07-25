@@ -1,19 +1,65 @@
 import React, { useState } from 'react'
-import QuantitySelector from '../components/Picker/QuantitySelector'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Dropdown } from 'react-native-element-dropdown'
 import RenderHTML from 'react-native-render-html'
+import { useNavigation } from '@react-navigation/native'
 
-const CartProductScreen = ({ product }) => {
+const CartProductScreen = ({ product, setaddToCart }) => {
+  const { id, price, name } = product
+  const imageUrl = product?.images?.[0]?.src || ''
+
+  const navigation = useNavigation()
+  const CartNavigate = () => {
+    navigation.navigate('CartListing')
+  }
   const { width } = Dimensions.get('window')
   const colors = product.attributes?.map(att => att.options)[1] || []
   const sizes = product.attributes?.map(att => att.options)[0] || []
   const sizesOptions = sizes.map((item) => ({ label: item, value: item }))
   const colorsOptions = colors.map((item) => ({ label: item, value: item }))
-
   const [selectedSize, setSelectedSize] = useState(null)
   const [selectedColor, setSelectedColor] = useState(null)
+  const [quantity, setQuantity] = useState(1)
+
+  const increaseQuantity = () => setQuantity(quantity + 1)
+  const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1)
+
+  const handleSelect = () => {
+    setaddToCart(prevArray => {
+      const existingItem = prevArray.find(cartItem => cartItem.id === id)
+
+      if (existingItem && (existingItem.size !== selectedSize || existingItem.color !== selectedColor || existingItem.quantity !== quantity)) {
+        const newItem = {
+          size: selectedSize,
+          color: selectedColor,
+          id,
+          imageUrl,
+          price,
+          quantity,
+          name
+        }
+
+        return [...prevArray, newItem]
+      } else if (!existingItem) {
+        const newItem = {
+          size: selectedSize,
+          color: selectedColor,
+          id,
+          imageUrl,
+          price,
+          quantity,
+          name
+        }
+
+        return [...prevArray, newItem]
+      }
+      return prevArray
+    })
+    setTimeout(() => {
+      CartNavigate()
+    }, 0)
+  }
 
   return (
     <>
@@ -67,7 +113,15 @@ const CartProductScreen = ({ product }) => {
             </View>
             <View style={styles.text_container}>
               <Text style={styles.inner_text}>Select Quantity</Text>
-              <QuantitySelector />
+              <View style={styles.container1}>
+                <TouchableOpacity onPress={decreaseQuantity} style={styles.quan_button}>
+                  <Text style={styles.buttonText}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.quantity}>{quantity}</Text>
+                <TouchableOpacity onPress={increaseQuantity} style={styles.quan_button}>
+                  <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             <View>
               <View>
@@ -86,7 +140,7 @@ const CartProductScreen = ({ product }) => {
             </View>
           </View>
           <View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleSelect}>
               <View style={styles.button_container_hold}>
                 <View style={styles.buttonContainer}>
                   <Text style={styles.text_cart}>Add to Cart</Text>
@@ -232,6 +286,28 @@ const styles = StyleSheet.create({
     color: '#000', // Set your desired text color
     fontSize: 16 // Set your desired font size
     // Add more styles as needed
+  },
+  container1: {
+    flexDirection: 'row',
+    width: moderateScale(110),
+    alignItems: 'center'
+  },
+  quan_button: {
+    width: moderateScale(35),
+    height: verticalScale(27),
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black'
+  },
+  buttonText: {
+    fontSize: moderateScale(20),
+    fontWeight: 'bold'
+  },
+  quantity: {
+    marginHorizontal: moderateScale(5),
+    padding: moderateScale(5),
+    fontSize: moderateScale(20),
+    color: 'black'
   }
 
 })

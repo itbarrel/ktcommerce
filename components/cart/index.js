@@ -1,19 +1,19 @@
 import React from 'react'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
-import { Text, StyleSheet, TouchableOpacity, View, ScrollView } from 'react-native'
+import { Text, StyleSheet, TouchableOpacity, View, FlatList } from 'react-native'
 import CartCard from './card'
 
-const CartCardListing = () => {
+const CartCardListing = (props) => {
+  const cartData = props.route.params.addToCart
+
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.cartContainer}>
-          <CartCard />
-          <CartCard />
-          <CartCard />
-
-        </View>
-      </ScrollView>
+      <FlatList
+        data={cartData}
+        renderItem={({ item }) => <CartCard item={item} />}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
+        contentContainerStyle={styles.cartContainer}
+      />
       <View style={styles.checkoutContainer}>
         <View style={styles.inner_checkout}>
           <View><Text style={styles.total_price}>Subtotal</Text></View>
@@ -32,10 +32,9 @@ const CartCardListing = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'flex-start'
   },
   cartContainer: {
-    flex: 1,
     paddingTop: verticalScale(20),
     paddingBottom: 30
   },
@@ -68,7 +67,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'black'
   }
-
 })
 
 export default CartCardListing

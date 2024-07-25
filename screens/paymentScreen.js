@@ -73,11 +73,7 @@ const PaymentScreen = () => {
       <View style={styles.container}>
         <View style={styles.inner_container}>
           <View style={styles.location}>
-            <Icon
-              name='location-pin'
-              size={20}
-            />
-            <Text>Shipping Address</Text>
+            <Text>Delivery Service</Text>
           </View>
           <View>
             <Text>Edit</Text>
@@ -88,14 +84,10 @@ const PaymentScreen = () => {
         </View>
         <View style={styles.inner_container}>
           <View style={styles.location}>
-            <Text style={styles.express_text}>
-Express Delivery
-            </Text>
+            <Text style={styles.text2}>Express Delivery</Text>
           </View>
           <View>
-            <Text>
-              $2
-            </Text>
+            <Text style={styles.text2}>$2</Text>
           </View>
         </View>
 
@@ -129,9 +121,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'row'
+
   },
   textSection: {
-    padding: 10
+    padding: 4
   },
   text1: {
     fontSize: 15

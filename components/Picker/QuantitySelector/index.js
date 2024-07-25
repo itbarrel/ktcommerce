@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 
-const QuantitySelector = () => {
+const QuantitySelector = ({ quantityCahnge }) => {
   const [quantity, setQuantity] = useState(1)
 
   const increaseQuantity = () => setQuantity(quantity + 1)
@@ -13,7 +13,7 @@ const QuantitySelector = () => {
       <TouchableOpacity onPress={decreaseQuantity} style={styles.button}>
         <Text style={styles.buttonText}>-</Text>
       </TouchableOpacity>
-      <Text style={styles.quantity}>{quantity}</Text>
+      <Text style={styles.quantity}>{quantityCahnge}</Text>
       <TouchableOpacity onPress={increaseQuantity} style={styles.button}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>

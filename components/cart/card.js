@@ -4,19 +4,17 @@ import { Text, Image, View, StyleSheet } from 'react-native'
 import QuantitySelector from '../Picker/QuantitySelector'
 import Icon from 'react-native-vector-icons/AntDesign'
 
-const CartCard = () => {
+const CartCard = ({ item }) => {
+  const { imageUrl, price, color, size, name } = item
+  const quantityCahnge = (item.quantity)
   const [checked, setChecked] = useState(false)
   const handleCheckboxToggle = () => {
     setChecked(!checked)
   }
-  const slideItems = [
-    {
-      key: '1',
-      image: require('../../assets/images/images.jpeg'),
-      backgroundColor: '#a3c9a8'
-    }
-
-  ]
+  const calculateSubtotal = (quantityCahnge, price) => {
+    return (quantityCahnge * price).toFixed(2)
+  }
+  const subtotal = calculateSubtotal(quantityCahnge, price)
 
   return (
     <View style={styles.container}>
@@ -31,24 +29,24 @@ const CartCard = () => {
         <View style={styles.card}>
           <View style={styles.imageSection}>
             <Image
-              source={slideItems[0].image}
+              source={{ uri: imageUrl }}
               style={styles.image}
             />
           </View>
           <View style={styles.textSection}>
             <Text style={styles.text2}>
-           Lewis Jens
+              {name}
             </Text>
             <Text style={styles.text1}>
-            Color: Dark gary
+             Color: {color || 'not available'}
             </Text>
             <Text style={styles.text1}>
-           Size: L
+              Size:{size}
             </Text>
             <Text style={styles.text2}>
-         $76
+              Price:{price}DKK
             </Text>
-            <QuantitySelector />
+            <QuantitySelector quantityCahnge={quantityCahnge} />
           </View>
         </View>
 
@@ -64,7 +62,7 @@ const CartCard = () => {
         <View style={styles.line} />
       </View>
       <View style={styles.sub_total}>
-        <Text style={styles.text2}>Sub Total : $765</Text>
+        <Text style={styles.text2}>Sub Total : {subtotal}</Text>
       </View>
     </View>
   )
