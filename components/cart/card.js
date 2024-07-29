@@ -1,21 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Checkbox } from 'react-native-paper'
 import { Text, Image, View, StyleSheet } from 'react-native'
 import QuantitySelector from '../Picker/QuantitySelector'
 import Icon from 'react-native-vector-icons/AntDesign'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
-const CartCard = ({ item }) => {
+const CartCard = ({ item, onDelete, setCartData }) => {
   const { imageUrl, price, color, size, name } = item
   const quantityCahnge = (item.quantity)
   const [checked, setChecked] = useState(false)
+  const [totalSubtotal, setTotalSubtotal] = useState(0)
+
   const handleCheckboxToggle = () => {
     setChecked(!checked)
+    setCartData(prevCartData =>
+      prevCartData.map(cartItem =>
+        cartItem.productId === item.productId && cartItem.color === item.color && cartItem.size === item.size && cartItem.quantity === item.quantity
+          ? { ...cartItem, checked: !checked }
+          : cartItem
+      )
+    )
   }
   const calculateSubtotal = (quantityCahnge, price) => {
     return (quantityCahnge * price).toFixed(2)
   }
   const subtotal = calculateSubtotal(quantityCahnge, price)
 
+  // useEffect(() => {
+  //   if (checked) {
+  //     setTotalSubtotal(subtotal)
+  //   } else {
+  //     setTotalSubtotal(prevTotal => prevTotal - subtotal)
+  //   }
+  // }, [checked])
   return (
     <View style={styles.container}>
       <View style={styles.inner_container}>
@@ -44,19 +61,20 @@ const CartCard = ({ item }) => {
               Size:{size}
             </Text>
             <Text style={styles.text2}>
-              Price:{price}DKK
+              {price}DKK
             </Text>
             <QuantitySelector quantityCahnge={quantityCahnge} />
           </View>
         </View>
-
-        <View style={styles.icon}>
-          <Icon
-            name='delete'
-            size={18}
-            color='black'
-          />
-        </View>
+        <TouchableOpacity onPress={onDelete} >
+          <View style={styles.icon}>
+            <Icon
+              name='delete'
+              size={18}
+              color='black'
+            />
+          </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.line_container}>
         <View style={styles.line} />
@@ -102,7 +120,7 @@ const styles = StyleSheet.create({
   },
   text1: {
     fontSize: 15,
-    color: 'black'
+    color: '#7A8D9C'
   },
   text2: {
     fontWeight: 'bold',

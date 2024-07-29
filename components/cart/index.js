@@ -1,16 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Text, StyleSheet, TouchableOpacity, View, FlatList } from 'react-native'
 import CartCard from './card'
 
 const CartCardListing = (props) => {
-  const cartData = props.route.params.addToCart
+  const [cartData, setCartData] = useState(props.route.params.addToCart)
+  console.log(cartData, '..................')
+
+  // eslint-disable-next-line camelcase
+  const handleDelete = (product_id, size, color, quantity) => {
+    // eslint-disable-next-line camelcase
+    const newCartData = cartData.filter(item => !(item.product_id === product_id && item.size === size && item.color === color && item.quantity === quantity))
+    setCartData(newCartData)
+  }
 
   return (
     <View style={styles.container}>
       <FlatList
         data={cartData}
-        renderItem={({ item }) => <CartCard item={item} />}
+        renderItem={({ item }) => <CartCard item={item}
+          setCartData={setCartData}
+          onDelete={() => handleDelete(item.product_id, item.size, item.color, item.quantity)}
+        />}
         keyExtractor={(item, index) => `${item.id}-${index}`}
         contentContainerStyle={styles.cartContainer}
       />

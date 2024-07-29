@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Text, SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Image } from 'react-native'
+import { Text, SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Image, Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { login } from '../services/login'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 
 const LoginScreen = () => {
@@ -10,6 +11,14 @@ const LoginScreen = () => {
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible)
+  }
+  const handleLogin = async () => {
+    try {
+      const response = await login()
+      Alert.alert('Login successful!')
+    } catch (error) {
+      Alert.alert('Login failed', 'Invalid username or password')
+    }
   }
 
   return (
@@ -25,6 +34,7 @@ const LoginScreen = () => {
               style={styles.input}
               onChangeText={setText}
               placeholder="UserName"
+              placeholderTextColor="black"
               value={text}
             />
             <View style={styles.passwordContainer}>
@@ -33,6 +43,7 @@ const LoginScreen = () => {
                 onChangeText={setNumber}
                 value={number}
                 placeholder="Password"
+                placeholderTextColor="black"
                 secureTextEntry={!passwordVisible}
               />
               <TouchableOpacity
@@ -48,10 +59,10 @@ const LoginScreen = () => {
             <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleLogin}>
             <View style={styles.buttonContainerHold}>
               <View style={styles.buttonContainer}>
-                <Text style={styles.text}>SIGN IN</Text>
+                <Text style={styles.text}>LOG IN</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -68,7 +79,8 @@ const styles = StyleSheet.create({
     margin: moderateScale(12),
     borderWidth: 1,
     padding: moderateScale(10),
-    borderRadius: moderateScale(20)
+    borderRadius: moderateScale(20),
+    color: 'black'
   },
   title: {
     fontSize: moderateScale(40),
@@ -101,12 +113,13 @@ const styles = StyleSheet.create({
     margin: moderateScale(12),
     borderWidth: 1,
     borderRadius: moderateScale(20),
-    paddingRight: moderateScale(10) // Ensure space for the icon
+    paddingRight: moderateScale(10)
   },
   passwordInput: {
     flex: 1,
     height: moderateScale(60),
-    padding: moderateScale(10)
+    padding: moderateScale(10),
+    color: 'black'
   },
   iconContainer: {
     position: 'absolute',
@@ -133,7 +146,8 @@ const styles = StyleSheet.create({
   },
   forgotText: {
     fontWeight: 'bold',
-    alignSelf: 'flex-end'
+    alignSelf: 'flex-end',
+    color: 'black'
   }
 })
 

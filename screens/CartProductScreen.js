@@ -21,6 +21,7 @@ const CartProductScreen = ({ product, setaddToCart }) => {
   const [selectedSize, setSelectedSize] = useState(null)
   const [selectedColor, setSelectedColor] = useState(null)
   const [quantity, setQuantity] = useState(1)
+  const [checked, setChecked] = useState(false)
 
   const increaseQuantity = () => setQuantity(quantity + 1)
   const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1)
@@ -33,11 +34,12 @@ const CartProductScreen = ({ product, setaddToCart }) => {
         const newItem = {
           size: selectedSize,
           color: selectedColor,
-          id,
+          product_id: id,
           imageUrl,
           price,
           quantity,
-          name
+          name,
+          checked: setChecked
         }
 
         return [...prevArray, newItem]
@@ -45,11 +47,12 @@ const CartProductScreen = ({ product, setaddToCart }) => {
         const newItem = {
           size: selectedSize,
           color: selectedColor,
-          id,
+          productId: id,
           imageUrl,
           price,
           quantity,
-          name
+          name,
+          checked
         }
 
         return [...prevArray, newItem]
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
   },
   inner_text: {
     fontSize: 15,
-    color: '#363636',
+    color: '#7A8D9C',
     fontWeight: 'bold'
   },
   inner_container: {
@@ -283,9 +286,8 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   htmlContent: {
-    color: '#000', // Set your desired text color
-    fontSize: 16 // Set your desired font size
-    // Add more styles as needed
+    color: '#7A8D9C',
+    fontSize: 16
   },
   container1: {
     flexDirection: 'row',
