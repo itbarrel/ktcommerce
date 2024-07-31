@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Checkbox } from 'react-native-paper'
 import { Text, Image, View, StyleSheet } from 'react-native'
 import QuantitySelector from '../Picker/QuantitySelector'
@@ -6,33 +6,36 @@ import Icon from 'react-native-vector-icons/AntDesign'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const CartCard = ({ item, onDelete, setCartData }) => {
-  const { imageUrl, price, color, size, name } = item
-  const quantityCahnge = (item.quantity)
+  const { imageUrl, price, color, size, name, quantity } = item
   const [checked, setChecked] = useState(false)
-  const [totalSubtotal, setTotalSubtotal] = useState(0)
+  const [currentQuantity, setCurrentQuantity] = useState(quantity)
 
   const handleCheckboxToggle = () => {
     setChecked(!checked)
     setCartData(prevCartData =>
       prevCartData.map(cartItem =>
-        cartItem.productId === item.productId && cartItem.color === item.color && cartItem.size === item.size && cartItem.quantity === item.quantity
+        cartItem.product_id === item.product_id && cartItem.color === item.color && cartItem.size === item.size && cartItem.quantity === item.quantity
           ? { ...cartItem, checked: !checked }
           : cartItem
       )
     )
   }
-  const calculateSubtotal = (quantityCahnge, price) => {
-    return (quantityCahnge * price).toFixed(2)
+  const handleQuantityChange = (newQuantity) => {
+    setCurrentQuantity(newQuantity)
+    setCartData(prevCartData =>
+      prevCartData.map(cartItem =>
+        cartItem.product_id === item.product_id && cartItem.color === item.color && cartItem.size === item.size
+          ? { ...cartItem, quantity: newQuantity }
+          : cartItem
+      )
+    )
   }
-  const subtotal = calculateSubtotal(quantityCahnge, price)
 
-  // useEffect(() => {
-  //   if (checked) {
-  //     setTotalSubtotal(subtotal)
-  //   } else {
-  //     setTotalSubtotal(prevTotal => prevTotal - subtotal)
-  //   }
-  // }, [checked])
+  const calculateSubtotal = (currentQuantity, price) => {
+    return (currentQuantity * price).toFixed(2)
+  }
+  const subtotal = calculateSubtotal(currentQuantity, price)
+
   return (
     <View style={styles.container}>
       <View style={styles.inner_container}>
@@ -63,7 +66,7 @@ const CartCard = ({ item, onDelete, setCartData }) => {
             <Text style={styles.text2}>
               {price}DKK
             </Text>
-            <QuantitySelector quantityCahnge={quantityCahnge} />
+            <QuantitySelector selectQuantity={currentQuantity} quantityChange={handleQuantityChange} />
           </View>
         </View>
         <TouchableOpacity onPress={onDelete} >

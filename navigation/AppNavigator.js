@@ -61,7 +61,7 @@ const TabNavigator = () => {
         headerLeft: () => null
       }}
     />
-    <Tab.Screen name="Profile" component={PaymentScreen} />
+    <Tab.Screen name="Profile" component={ProfileScreen} />
   </Tab.Navigator>)
 }
 
@@ -129,7 +129,20 @@ const AppNavigator = () => {
           )
         }}
       />
-      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+      <Stack.Screen name="PaymentScreen"
+        component={PaymentScreen}
+        options={{
+          headerTitle: () => (
+            <View style={styles.container}>
+              <Image
+                source={require('../assets/images/logo_sort.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          )
+        }}
+      />
       <Stack.Screen
         name="ProductDetailScreen"
         component={ProductDetailScreen}

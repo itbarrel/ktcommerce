@@ -1,18 +1,31 @@
 import React, { useState } from 'react'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Text, StyleSheet, TouchableOpacity, View, FlatList } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import CartCard from './card'
 
 const CartCardListing = (props) => {
   const [cartData, setCartData] = useState(props.route.params.addToCart)
-  console.log(cartData, '..................')
-
+  const navigation = useNavigation()
+  const handlenavigate = () => {
+    const checkedItems = cartData.filter(item => item.checked)
+    navigation.navigate('PaymentScreen', { checkedItems, totalCheckedPrice })
+  }
   // eslint-disable-next-line camelcase
   const handleDelete = (product_id, size, color, quantity) => {
     // eslint-disable-next-line camelcase
     const newCartData = cartData.filter(item => !(item.product_id === product_id && item.size === size && item.color === color && item.quantity === quantity))
     setCartData(newCartData)
   }
+
+  const calculateTotalCheckedPrice = (data) => {
+    return data
+      .filter(item => item.checked)
+      .map(item => parseFloat(item.price) * item.quantity)
+      .reduce((acc, total) => acc + total, 0)
+  }
+
+  const totalCheckedPrice = calculateTotalCheckedPrice(cartData)
 
   return (
     <View style={styles.container}>
@@ -28,9 +41,9 @@ const CartCardListing = (props) => {
       <View style={styles.checkoutContainer}>
         <View style={styles.inner_checkout}>
           <View><Text style={styles.total_price}>Subtotal</Text></View>
-          <View><Text style={styles.total_price}>$152</Text></View>
+          <View><Text style={styles.total_price}>{totalCheckedPrice}DKK</Text></View>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handlenavigate}>
           <View style={styles.buttonContainer}>
             <Text style={styles.textCart}>CHECK OUT</Text>
           </View>
@@ -76,7 +89,8 @@ const styles = StyleSheet.create({
   },
   total_price: {
     fontSize: 15,
-    color: 'black'
+    color: 'black',
+    fontWeight: 'bold'
   }
 })
 

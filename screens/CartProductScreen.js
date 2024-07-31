@@ -6,7 +6,8 @@ import RenderHTML from 'react-native-render-html'
 import { useNavigation } from '@react-navigation/native'
 
 const CartProductScreen = ({ product, setaddToCart }) => {
-  const { id, price, name } = product
+  const { id, price, name, variations } = product
+  console.log(variations, 'GGGGGGGGGGGGGGGGGGGGGGGGGg')
   const imageUrl = product?.images?.[0]?.src || ''
 
   const navigation = useNavigation()
@@ -47,7 +48,7 @@ const CartProductScreen = ({ product, setaddToCart }) => {
         const newItem = {
           size: selectedSize,
           color: selectedColor,
-          productId: id,
+          product_id: id,
           imageUrl,
           price,
           quantity,
