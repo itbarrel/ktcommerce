@@ -67,9 +67,10 @@ export default class ApiClient {
   }
 
   async post (path, data, callback) {
+    const url = withQuery(this.apiUrl + path, await this.getWOCommerceKeys(data))
     try {
       return await this.checkStatus(
-        await this.client.post(this.apiUrl + path, data, await this.getConfigurations(path)),
+        await this.client.post(url, data, await this.getConfigurations(path)),
         callback
       )
     } catch (error) {

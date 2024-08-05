@@ -159,7 +159,6 @@ const AppNavigator = () => {
           )
         }}
       />
-
     </Stack.Navigator>
   )
 }

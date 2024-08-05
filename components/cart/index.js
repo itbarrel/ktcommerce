@@ -11,6 +11,8 @@ const CartCardListing = (props) => {
     const checkedItems = cartData.filter(item => item.checked)
     navigation.navigate('PaymentScreen', { checkedItems, totalCheckedPrice })
   }
+  console.log(cartData, ':::::::::::::::;')
+
   // eslint-disable-next-line camelcase
   const handleDelete = (product_id, size, color, quantity) => {
     // eslint-disable-next-line camelcase

@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator } from 'react-native'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Dropdown } from 'react-native-element-dropdown'
 import RenderHTML from 'react-native-render-html'
 import { useNavigation } from '@react-navigation/native'
+import { RetrieveVariation } from '../services/order'
 
 const CartProductScreen = ({ product, setaddToCart }) => {
   const { id, price, name, variations } = product
@@ -23,9 +24,29 @@ const CartProductScreen = ({ product, setaddToCart }) => {
   const [selectedColor, setSelectedColor] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [checked, setChecked] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true)
+  const [variation, setVariation] = useState([])
+  const variationId = variation[0]?.id
+
+  useEffect(() => {
+    setIsButtonDisabled(!selectedSize || !selectedColor)
+  }, [selectedSize, selectedColor])
 
   const increaseQuantity = () => setQuantity(quantity + 1)
   const decreaseQuantity = () => setQuantity(quantity > 1 ? quantity - 1 : 1)
+
+  const handleSelectVariation = async (search) => {
+    setIsLoading(true)
+    try {
+      const response = await RetrieveVariation(id, selectedSize, selectedColor)
+      setVariation(response)
+    } catch (error) {
+      console.error('Error fetching variations:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleSelect = () => {
     setaddToCart(prevArray => {
@@ -37,6 +58,7 @@ const CartProductScreen = ({ product, setaddToCart }) => {
           color: selectedColor,
           product_id: id,
           imageUrl,
+          variation_id: variationId,
           price,
           quantity,
           name,
@@ -50,6 +72,7 @@ const CartProductScreen = ({ product, setaddToCart }) => {
           color: selectedColor,
           product_id: id,
           imageUrl,
+          variation_id: variationId,
           price,
           quantity,
           name,
@@ -61,8 +84,9 @@ const CartProductScreen = ({ product, setaddToCart }) => {
       return prevArray
     })
     setTimeout(() => {
+      handleSelectVariation()
       CartNavigate()
-    }, 0)
+    }, 1500)
   }
 
   return (
@@ -144,7 +168,7 @@ const CartProductScreen = ({ product, setaddToCart }) => {
             </View>
           </View>
           <View>
-            <TouchableOpacity onPress={handleSelect}>
+            <TouchableOpacity onPress={handleSelect}disabled={isButtonDisabled}>
               <View style={styles.button_container_hold}>
                 <View style={styles.buttonContainer}>
                   <Text style={styles.text_cart}>Add to Cart</Text>

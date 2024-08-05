@@ -1,42 +1,94 @@
+/* eslint-disable camelcase */
 import React, { useState } from 'react'
-import { View, StyleSheet, Text, Image, TextInput, ScrollView, Button, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, Image, TextInput, ScrollView, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CrossIcon from 'react-native-vector-icons/Entypo'
 import WalletIcon from 'react-native-vector-icons/AntDesign'
 import Modal from 'react-native-modal'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
+import { CreateOrder } from '../services/order'
 
 const PaymentScreen = (props) => {
   const [isModalVisible, setModalVisible] = useState(false)
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+  const [first_name, setFirstName] = useState('')
+  const [last_name, setLastName] = useState('')
   const [contact, setContact] = useState('')
-  const [address, setAddress] = useState('')
+  const [email, setEmail] = useState('')
+  const [address_1, setAddress_1] = useState('')
+  const [address_2, setAddress_2] = useState('')
   const [state, setState] = useState('')
   const [code, setCode] = useState('')
   const [city, setCity] = useState('')
   const [country, setCountry] = useState('')
-  const [data, setData] = useState(null)
-  console.log(data)
+  const [user, setUser] = useState({})
+  console.log(user, 'LLLLLL')
 
   const handleSubmit = () => {
-    const updatedData = { firstName, lastName, contact, address, state, code, city, country }
-    setData(updatedData)
+    const updatedData = { first_name, last_name, phone: contact, address_1, address_2, state, postcode: code, city, country, email }
+    setUser(updatedData)
     setFirstName('')
     setLastName('')
     setContact('')
-    setAddress('')
-    setAddress('')
+    setAddress_1('')
+    setAddress_2('')
     setState('')
     setCode('')
     setCity('')
     setCountry('')
+    setEmail('')
     toggleModal()
   }
   const totalProductPrice = props.route.params.totalCheckedPrice
   const checkItem = props.route.params.checkedItems
+  console.log(checkItem, '.........................')
+
   const toggleModal = () => {
+    if (!isModalVisible) {
+      setFirstName(user?.first_name || '')
+      setLastName(user?.last_name || '')
+      setContact(user?.phone || '')
+      setEmail(user?.email || '')
+      setAddress_1(user?.address_1 || '')
+      setAddress_2(user?.address_2 || '')
+      setState(user?.state || '')
+      setCode(user?.postcode || '')
+      setCity(user?.city || '')
+      setCountry(user?.country || '')
+    }
     setModalVisible(!isModalVisible)
+  }
+
+  const handlePlaceOrder = async () => {
+    try {
+      const lineItems = checkItem.map((item) => ({
+        variation_id: item.variation_id,
+        product_id: item.product_id,
+        quantity: item.quantity
+      }))
+
+      console.log(lineItems)
+      const payload = {
+        billing: user,
+        shipping: user,
+        line_items: lineItems,
+        shipping_lines: [
+          {
+            method_id: 'flat_rate',
+            method_title: 'Flat Rate',
+            total: '10.00'
+          }
+        ],
+        payment_method: 'bacs',
+        payment_method_title: 'Direct Bank Transfer',
+        set_paid: true
+      }
+      const response = await CreateOrder(payload)
+      console.log('Order placed successfully:', response)
+    } catch (error) {
+      console.log(error, 'erorrrrrrrrrrr')
+
+      console.error('Error placing order:', error)
+    }
   }
 
   const ProductCard = ({ item }) => (
@@ -79,25 +131,31 @@ const PaymentScreen = (props) => {
           </View>
           <View style={styles.textSection}>
             <Text style={styles.bold_text}>
-              {data?.firstName || 'Name'} {data?.lastName || 'Name'}
+              {user?.first_name || 'FirstName'} {user?.last_name || 'LastName'}
             </Text>
             <Text style={styles.black_text}>
-              {data?.address || 'Address'}
+              {user?.address_1 || 'Address-1'}
+            </Text>
+            <Text style={styles.black_text}>
+              {user?.address_2 || 'Address-2'}
             </Text>
             <Text style={styles.bold_text}>
-              {data?.contact || 'Contact'}
+              {user?.phone || 'Contact'}
             </Text>
             <Text style={styles.bold_text}>
-              {data?.city || 'City'}
+              {user?.city || 'City'}
             </Text>
             <Text style={styles.bold_text}>
-              {data?.state || 'State'}
+              {user?.state || 'State'}
             </Text>
             <Text style={styles.bold_text}>
-              {data?.code || 'Postal Code'}
+              {user?.postcode || 'Postal Code'}
             </Text>
             <Text style={styles.bold_text}>
-              {data?.country || 'Country'}
+              {user?.country || 'Country'}
+            </Text>
+            <Text style={styles.bold_text}>
+              {user?.email || 'Email'}
             </Text>
           </View>
         </View>
@@ -192,7 +250,7 @@ const PaymentScreen = (props) => {
           </View>
         </View>
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handlePlaceOrder}>
             <View style={styles.button_container_hold}>
               <View style={styles.buttonContainer}>
                 <Text style={styles.text_cart}>Place Order</Text>
@@ -227,15 +285,15 @@ const PaymentScreen = (props) => {
               <TextInput
                 style={styles.name_input}
                 placeholderTextColor="#7A8D9C"
-                placeholder="Enter the Name"
-                value={firstName}
+                placeholder="Frist Name"
+                value={first_name}
                 onChangeText={setFirstName}
               />
               <TextInput
                 style={styles.name_input}
                 placeholderTextColor="#7A8D9C"
-                placeholder="Enter the LastName"
-                value={lastName}
+                placeholder="Last Name"
+                value={last_name}
                 onChangeText={setLastName}
               />
             </View>
@@ -243,14 +301,14 @@ const PaymentScreen = (props) => {
               <TextInput
                 style={styles.name_input}
                 placeholderTextColor="#7A8D9C"
-                placeholder="Enter the City"
+                placeholder="City"
                 value={city}
                 onChangeText={setCity}
               />
               <TextInput
                 style={styles.name_input}
                 placeholderTextColor="#7A8D9C"
-                placeholder="Enter the State"
+                placeholder="State"
                 value={state}
                 onChangeText={setState}
               />
@@ -260,25 +318,53 @@ const PaymentScreen = (props) => {
                 style={styles.name_input}
                 placeholderTextColor="#7A8D9C"
                 keyboardType='numeric'
-                placeholder="Enter the PostCode"
+                placeholder="PostCode"
                 value={code}
                 onChangeText={setCode}
               />
               <TextInput
                 style={styles.name_input}
                 placeholderTextColor="#7A8D9C"
-                placeholder="Enter the Country"
+                placeholder="Country"
                 value={country}
                 onChangeText={setCountry}
               />
             </View>
+            <View style={{ display: 'flex', flexDirection: 'row' }}>
+              <TextInput
+                style={styles.name_input}
+                placeholderTextColor="#7A8D9C"
+                keyboardType='email'
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <TextInput
+                style={styles.name_input}
+                placeholderTextColor="#7A8D9C"
+                keyboardType='numeric'
+                placeholder="Contact"
+                value={contact}
+                onChangeText={setContact}
+              />
+
+            </View>
+
             <TextInput
               style={styles.address_input}
               placeholderTextColor="#7A8D9C"
-              placeholder="Enter the Address"
+              placeholder="Address"
               multiline={true}
-              value={address}
-              onChangeText={setAddress}
+              value={address_1}
+              onChangeText={setAddress_1}
+            />
+            <TextInput
+              style={styles.address_input}
+              placeholderTextColor="#7A8D9C"
+              placeholder="Address"
+              multiline={true}
+              value={address_2}
+              onChangeText={setAddress_2}
             />
           </View>
           <TouchableOpacity onPress={handleSubmit}>
@@ -362,7 +448,7 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   address_input: {
-    padding: moderateScale(30),
+    padding: moderateScale(20),
     backgroundColor: 'white',
     borderRadius: moderateScale(10),
     shadowColor: '#000',
@@ -388,6 +474,20 @@ const styles = StyleSheet.create({
     margin: 5,
     marginBottom: 15
   },
+  email_input: {
+    backgroundColor: 'white',
+    borderRadius: moderateScale(10),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: verticalScale(2) },
+    shadowOpacity: 0.8,
+    shadowRadius: moderateScale(2),
+    elevation: 5,
+    color: 'black',
+    width: 280,
+    margin: 5,
+    marginBottom: 15
+
+  },
   description: {
     marginLeft: moderateScale(10),
     color: 'black'
@@ -401,7 +501,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: verticalScale(12),
     display: 'flex',
-    minHeight: verticalScale(420),
+    minHeight: verticalScale(570),
     paddingBottom: verticalScale(20),
     width: verticalScale(310),
     flexDirection: 'column',
