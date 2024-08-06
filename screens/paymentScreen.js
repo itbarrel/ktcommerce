@@ -1,41 +1,62 @@
 /* eslint-disable camelcase */
 import React, { useState } from 'react'
-import { View, StyleSheet, Text, Image, TextInput, ScrollView, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Text, Image, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import CrossIcon from 'react-native-vector-icons/Entypo'
 import WalletIcon from 'react-native-vector-icons/AntDesign'
+import { useNavigation } from '@react-navigation/native'
 import Modal from 'react-native-modal'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { CreateOrder } from '../services/order'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
 
 const PaymentScreen = (props) => {
   const [isModalVisible, setModalVisible] = useState(false)
-  const [first_name, setFirstName] = useState('')
-  const [last_name, setLastName] = useState('')
-  const [contact, setContact] = useState('')
-  const [email, setEmail] = useState('')
-  const [address_1, setAddress_1] = useState('')
-  const [address_2, setAddress_2] = useState('')
-  const [state, setState] = useState('')
-  const [code, setCode] = useState('')
-  const [city, setCity] = useState('')
-  const [country, setCountry] = useState('')
   const [user, setUser] = useState({})
-  console.log(user, 'LLLLLL')
+  const [initialValues, setInitialValues] = useState({
+    first_name: '',
+    last_name: '',
+    phone: '',
+    email: '',
+    address_1: '',
+    address_2: '',
+    state: '',
+    postcode: '',
+    city: '',
+    country: ''
+  })
 
-  const handleSubmit = () => {
-    const updatedData = { first_name, last_name, phone: contact, address_1, address_2, state, postcode: code, city, country, email }
+  console.log(user, 'LLLl')
+
+  const navigation = useNavigation()
+
+  const validationSchema = Yup.object().shape({
+    first_name: Yup.string().required('First name is required!'),
+    last_name: Yup.string().required('Last name is required!'),
+    phone: Yup.string().required('Contact is required!'),
+    email: Yup.string().email('Invalid email!').required('Email is required!'),
+    address_1: Yup.string().required('Address is required!'),
+    address_2: Yup.string(),
+    state: Yup.string().required('State is required!'),
+    postcode: Yup.string().required('Postal code is required!'),
+    city: Yup.string().required('City is required!'),
+    country: Yup.string().required('Country is required!')
+  })
+  const handleSubmit = (values) => {
+    const updatedData = {
+      first_name: values.first_name,
+      last_name: values.last_name,
+      phone: values.phone,
+      address_1: values.address_1,
+      address_2: values.address_2,
+      state: values.state,
+      postcode: values.postcode,
+      city: values.city,
+      country: values.country,
+      email: values.email
+    }
     setUser(updatedData)
-    setFirstName('')
-    setLastName('')
-    setContact('')
-    setAddress_1('')
-    setAddress_2('')
-    setState('')
-    setCode('')
-    setCity('')
-    setCountry('')
-    setEmail('')
     toggleModal()
   }
   const totalProductPrice = props.route.params.totalCheckedPrice
@@ -43,18 +64,7 @@ const PaymentScreen = (props) => {
   console.log(checkItem, '.........................')
 
   const toggleModal = () => {
-    if (!isModalVisible) {
-      setFirstName(user?.first_name || '')
-      setLastName(user?.last_name || '')
-      setContact(user?.phone || '')
-      setEmail(user?.email || '')
-      setAddress_1(user?.address_1 || '')
-      setAddress_2(user?.address_2 || '')
-      setState(user?.state || '')
-      setCode(user?.postcode || '')
-      setCity(user?.city || '')
-      setCountry(user?.country || '')
-    }
+    setInitialValues(user)
     setModalVisible(!isModalVisible)
   }
 
@@ -83,10 +93,14 @@ const PaymentScreen = (props) => {
         set_paid: true
       }
       const response = await CreateOrder(payload)
-      console.log('Order placed successfully:', response)
+      Alert.alert(
+        'Success',
+        'Order placed successfully',
+        [
+          { text: 'OK', onPress: () => navigation.navigate('Home') }
+        ]
+      )
     } catch (error) {
-      console.log(error, 'erorrrrrrrrrrr')
-
       console.error('Error placing order:', error)
     }
   }
@@ -280,98 +294,158 @@ const PaymentScreen = (props) => {
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.shipping_container}>
-            <View style={{ display: 'flex', flexDirection: 'row' }}>
-              <TextInput
-                style={styles.name_input}
-                placeholderTextColor="#7A8D9C"
-                placeholder="Frist Name"
-                value={first_name}
-                onChangeText={setFirstName}
-              />
-              <TextInput
-                style={styles.name_input}
-                placeholderTextColor="#7A8D9C"
-                placeholder="Last Name"
-                value={last_name}
-                onChangeText={setLastName}
-              />
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row' }}>
-              <TextInput
-                style={styles.name_input}
-                placeholderTextColor="#7A8D9C"
-                placeholder="City"
-                value={city}
-                onChangeText={setCity}
-              />
-              <TextInput
-                style={styles.name_input}
-                placeholderTextColor="#7A8D9C"
-                placeholder="State"
-                value={state}
-                onChangeText={setState}
-              />
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row' }}>
-              <TextInput
-                style={styles.name_input}
-                placeholderTextColor="#7A8D9C"
-                keyboardType='numeric'
-                placeholder="PostCode"
-                value={code}
-                onChangeText={setCode}
-              />
-              <TextInput
-                style={styles.name_input}
-                placeholderTextColor="#7A8D9C"
-                placeholder="Country"
-                value={country}
-                onChangeText={setCountry}
-              />
-            </View>
-            <View style={{ display: 'flex', flexDirection: 'row' }}>
-              <TextInput
-                style={styles.name_input}
-                placeholderTextColor="#7A8D9C"
-                keyboardType='email'
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-              />
-              <TextInput
-                style={styles.name_input}
-                placeholderTextColor="#7A8D9C"
-                keyboardType='numeric'
-                placeholder="Contact"
-                value={contact}
-                onChangeText={setContact}
-              />
-
-            </View>
-
-            <TextInput
-              style={styles.address_input}
-              placeholderTextColor="#7A8D9C"
-              placeholder="Address"
-              multiline={true}
-              value={address_1}
-              onChangeText={setAddress_1}
-            />
-            <TextInput
-              style={styles.address_input}
-              placeholderTextColor="#7A8D9C"
-              placeholder="Address"
-              multiline={true}
-              value={address_2}
-              onChangeText={setAddress_2}
-            />
-          </View>
-          <TouchableOpacity onPress={handleSubmit}>
-            <View style={styles.Button}>
-              <Text style={{ color: 'black' }}>Submit</Text>
-            </View>
-          </TouchableOpacity>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            enableReinitialize={true}
+            onSubmit={(values) => handleSubmit(values)}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+              <View style={styles.shipping_container}>
+                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.name_input}
+                      placeholderTextColor="#7A8D9C"
+                      placeholder="First Name"
+                      onChangeText={handleChange('first_name')}
+                      onBlur={handleBlur('first_name')}
+                      value={values.first_name}
+                    />
+                    {touched.first_name && errors.first_name && (
+                      <Text style={styles.errorText}>{errors.first_name}</Text>
+                    )}
+                  </View>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.name_input}
+                      placeholderTextColor="#7A8D9C"
+                      placeholder="Last Name"
+                      onChangeText={handleChange('last_name')}
+                      onBlur={handleBlur('last_name')}
+                      value={values.last_name}
+                    />
+                    {touched.last_name && errors.last_name && (
+                      <Text style={styles.errorText}>{errors.last_name}</Text>
+                    )}
+                  </View>
+                </View>
+                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.name_input}
+                      placeholderTextColor="#7A8D9C"
+                      placeholder="City"
+                      onChangeText={handleChange('city')}
+                      onBlur={handleBlur('city')}
+                      value={values.city}
+                    />
+                    {touched.city && errors.city && (
+                      <Text style={styles.errorText}>{errors.city}</Text>
+                    )}
+                  </View>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.name_input}
+                      placeholderTextColor="#7A8D9C"
+                      placeholder="State"
+                      onChangeText={handleChange('state')}
+                      onBlur={handleBlur('state')}
+                      value={values.state}
+                    />
+                    {touched.state && errors.state && (
+                      <Text style={styles.errorText}>{errors.state}</Text>
+                    )}
+                  </View>
+                </View>
+                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.name_input}
+                      placeholderTextColor="#7A8D9C"
+                      keyboardType='numeric'
+                      placeholder="PostCode"
+                      onChangeText={handleChange('postcode')}
+                      onBlur={handleBlur('postcode')}
+                      value={values.postcode}
+                    />
+                    {touched.postcode && errors.postcode && (
+                      <Text style={styles.errorText}>{errors.postcode}</Text>
+                    )}
+                  </View>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.name_input}
+                      placeholderTextColor="#7A8D9C"
+                      placeholder="Country"
+                      onChangeText={handleChange('country')}
+                      onBlur={handleBlur('country')}
+                      value={values.country}
+                    />
+                    {touched.country && errors.country && (
+                      <Text style={styles.errorText}>{errors.country}</Text>
+                    )}
+                  </View>
+                </View>
+                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.name_input}
+                      placeholderTextColor="#7A8D9C"
+                      keyboardType='email-address'
+                      placeholder="Email"
+                      onChangeText={handleChange('email')}
+                      onBlur={handleBlur('email')}
+                      value={values.email}
+                    />
+                    {touched.email && errors.email && (
+                      <Text style={styles.errorText}>{errors.email}</Text>
+                    )}
+                  </View>
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      style={styles.name_input}
+                      placeholderTextColor="#7A8D9C"
+                      keyboardType='numeric'
+                      placeholder="Contact"
+                      onChangeText={handleChange('phone')}
+                      onBlur={handleBlur('phone')}
+                      value={values.phone}
+                    />
+                    {touched.phone && errors.phone && (
+                      <Text style={styles.errorText}>{errors.phone}</Text>
+                    )}
+                  </View>
+                </View>
+                <TextInput
+                  style={styles.address_input}
+                  placeholderTextColor="#7A8D9C"
+                  placeholder="Address Line 1"
+                  multiline={true}
+                  onChangeText={handleChange('address_1')}
+                  onBlur={handleBlur('address_1')}
+                  value={values.address_1}
+                />
+                {touched.address_1 && errors.address_1 && (
+                  <Text style={styles.errorText}>{errors.address_1}</Text>
+                )}
+                <TextInput
+                  style={styles.address_input}
+                  placeholderTextColor="#7A8D9C"
+                  placeholder="Address Line 2"
+                  multiline={true}
+                  onChangeText={handleChange('address_2')}
+                  onBlur={handleBlur('address_2')}
+                  value={values.address_2}
+                />
+                <TouchableOpacity onPress={handleSubmit}>
+                  <View style={styles.Button}>
+                    <Text style={{ color: 'black' }}>Submit</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+          </Formik>
         </View>
       </Modal>
     </View>
@@ -456,8 +530,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: moderateScale(2),
     elevation: 5,
-    width: 280,
-    color: 'black'
+    width: 305,
+    color: 'black',
+    margin: 5
 
   },
 
@@ -501,7 +576,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: verticalScale(12),
     display: 'flex',
-    minHeight: verticalScale(570),
+    minHeight: verticalScale(600),
     paddingBottom: verticalScale(20),
     width: verticalScale(310),
     flexDirection: 'column',
@@ -541,6 +616,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: verticalScale(30),
     paddingBottom: 10
+  },
+  errorText: {
+    color: 'red',
+    fontSize: moderateScale(12),
+    marginLeft: 10
   }
 
 })

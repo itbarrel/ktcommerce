@@ -6,12 +6,13 @@ import CartCard from './card'
 
 const CartCardListing = (props) => {
   const [cartData, setCartData] = useState(props.route.params.addToCart)
+  console.log(cartData, 'ppppppp')
+
   const navigation = useNavigation()
   const handlenavigate = () => {
     const checkedItems = cartData.filter(item => item.checked)
     navigation.navigate('PaymentScreen', { checkedItems, totalCheckedPrice })
   }
-  console.log(cartData, ':::::::::::::::;')
 
   // eslint-disable-next-line camelcase
   const handleDelete = (product_id, size, color, quantity) => {
@@ -25,6 +26,9 @@ const CartCardListing = (props) => {
       .filter(item => item.checked)
       .map(item => parseFloat(item.price) * item.quantity)
       .reduce((acc, total) => acc + total, 0)
+  }
+  const isAtLeastOneItemChecked = () => {
+    return cartData.some(item => item.checked)
   }
 
   const totalCheckedPrice = calculateTotalCheckedPrice(cartData)
@@ -45,7 +49,9 @@ const CartCardListing = (props) => {
           <View><Text style={styles.total_price}>Subtotal</Text></View>
           <View><Text style={styles.total_price}>{totalCheckedPrice}DKK</Text></View>
         </View>
-        <TouchableOpacity onPress={handlenavigate}>
+        <TouchableOpacity onPress={handlenavigate}
+          disabled={!isAtLeastOneItemChecked()}
+          style={[styles.buttonContainer, !isAtLeastOneItemChecked() && styles.disabledButton]}>
           <View style={styles.buttonContainer}>
             <Text style={styles.textCart}>CHECK OUT</Text>
           </View>
@@ -93,6 +99,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'black',
     fontWeight: 'bold'
+  },
+  disabledButton: {
+    opacity: 0.5,
+    backgroundColor: '#ccc'
   }
 })
 

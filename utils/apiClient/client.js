@@ -14,8 +14,9 @@ export default class ApiClient {
   constructor (apiUrl) {
     const config = {
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        Connection: 'keep-alive'
       }
     }
 
@@ -28,7 +29,6 @@ export default class ApiClient {
     }
     this.client = axios.create({
       baseURL: apiUrl,
-      timeout: 5000,
       headers: config.headers,
       responseType: 'json',
       maxContentLength: 2000,
