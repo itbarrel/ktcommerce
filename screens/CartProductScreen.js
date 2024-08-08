@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator } from 'react-native'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Dropdown } from 'react-native-element-dropdown'
 import RenderHTML from 'react-native-render-html'
 import { useNavigation } from '@react-navigation/native'
 import { RetrieveVariation } from '../services/order'
+import { CartContext } from '../Provider/cart'
 
-const CartProductScreen = ({ product, setaddToCart }) => {
+const CartProductScreen = ({ product }) => {
+  console.log(product.price, '::::::::::')
+
+  const { setaddToCart } = useContext(CartContext)
+
   const { id, price, name } = product
   const imageUrl = product?.images?.[0]?.src || ''
 
@@ -22,11 +27,8 @@ const CartProductScreen = ({ product, setaddToCart }) => {
   const [selectedSize, setSelectedSize] = useState(null)
   const [selectedColor, setSelectedColor] = useState(null)
   const [quantity, setQuantity] = useState(1)
-  const [checked, setChecked] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
-  // const [variation, setVariation] = useState([])
-  // const variationId = variation[0]?.id
 
   useEffect(() => {
     setIsButtonDisabled(!selectedSize || !selectedColor)
@@ -49,41 +51,43 @@ const CartProductScreen = ({ product, setaddToCart }) => {
   }
 
   const handleSelect = async () => {
-    const variantion = await handleSelectVariation()
-    setaddToCart(prevArray => {
-      const existingItem = prevArray.find(cartItem => cartItem.id === id)
+    const variation = await handleSelectVariation()
 
-      if (existingItem && (existingItem.size !== selectedSize || existingItem.color !== selectedColor || existingItem.quantity !== quantity)) {
-        const newItem = {
-          size: selectedSize,
-          color: selectedColor,
-          product_id: id,
-          imageUrl,
-          variation_id: variantion[0]?.id,
-          price,
-          quantity,
-          name,
-          checked: setChecked
+    setaddToCart(prevArray => {
+      // Find the index of an existing item that matches the product_id, size, and color
+      const existingItemIndex = prevArray.findIndex(cartItem => cartItem.product_id === id && cartItem.size === selectedSize && cartItem.color === selectedColor)
+
+      if (existingItemIndex !== -1) {
+        // If an existing item is found, add the quantity
+        const existingItem = prevArray[existingItemIndex]
+        const updatedItem = {
+          ...existingItem,
+          quantity: existingItem.quantity + quantity
         }
 
-        return [...prevArray, newItem]
-      } else if (!existingItem) {
+        return [
+          ...prevArray.slice(0, existingItemIndex),
+          updatedItem,
+          ...prevArray.slice(existingItemIndex + 1)
+        ]
+      } else {
+        // If no matching item is found, create a new item
         const newItem = {
           size: selectedSize,
           color: selectedColor,
           product_id: id,
           imageUrl,
-          variation_id: variantion[0]?.id,
+          variation_id: variation[0]?.id,
           price,
           quantity,
-          name,
-          checked
+          name
         }
 
         return [...prevArray, newItem]
       }
-      return prevArray
     })
+
+    // Navigate to the cart after a delay to ensure the state update is applied
     setTimeout(async () => {
       CartNavigate()
     }, 1500)
@@ -170,9 +174,15 @@ const CartProductScreen = ({ product, setaddToCart }) => {
           <View>
             <TouchableOpacity onPress={handleSelect}disabled={isButtonDisabled}>
               <View style={styles.button_container_hold}>
-                <View style={[styles.buttonContainer, isButtonDisabled && styles.disabledContainer]}>
-                  <Text style={styles.text_cart}>Add to Cart</Text>
-                </View>
+                {isLoading
+                  ? (
+                    <ActivityIndicator size="small" color="black" />
+                  )
+                  : (
+                    <View style={[styles.buttonContainer, isButtonDisabled && styles.disabledContainer]}>
+                      <Text style={styles.text_cart}>Add to Cart</Text>
+                    </View>
+                  )}
               </View>
             </TouchableOpacity>
           </View>
@@ -190,12 +200,14 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontSize: 20
+    fontSize: 20,
+    color: '#7A8D9C'
   },
   text_price: {
     fontSize: 20,
     fontWeight: '600',
-    textAlign: 'right'
+    textAlign: 'right',
+    color: '#7A8D9C'
   },
   text_container: {
     flexDirection: 'row',

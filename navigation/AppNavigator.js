@@ -61,13 +61,25 @@ const TabNavigator = () => {
         headerLeft: () => null
       }}
     />
-    <Tab.Screen name="Profile" component={ProfileScreen} />
+    <Tab.Screen name="Profile" component={ProfileScreen}
+      options={{
+        headerTitle: () => (
+          <View style={styles.container}>
+            <Image
+              source={require('../assets/images/logo_sort.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
+        )
+      }}
+
+    />
   </Tab.Navigator>)
 }
 
 const AppNavigator = () => {
   const [isModalVisible, setModalVisible] = useState(false)
-  const [addToCart, setaddToCart] = useState([])
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible)
@@ -116,7 +128,6 @@ const AppNavigator = () => {
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="CartListing" component={CartCardListing}
-        initialParams={{ addToCart }}
         options={{
           headerTitle: () => (
             <View style={styles.container}>
@@ -146,7 +157,6 @@ const AppNavigator = () => {
       <Stack.Screen
         name="ProductDetailScreen"
         component={ProductDetailScreen}
-        initialParams={{ setaddToCart }}
         options={{
           headerTitle: () => (
             <View style={styles.container}>

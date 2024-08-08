@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import Swipper from '../../components/carousel/swipper'
 import { RetrieveProduct } from '../../services/product'
-
 import CartProductScreen from '../CartProductScreen'
 
 const ProductDetailScreen = (props) => {

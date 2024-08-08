@@ -5,7 +5,10 @@ import Carousel from 'pinar'
 const Swipper = ({ product }) => {
   return (
     <View style={styles.container}>
-      <Carousel style={styles.carousel} showsControls={false}>
+      <Carousel
+        style={styles.carousel}
+        showsControls={false}
+      >
         {product?.images?.map((item, index) => (
           <Image
             key={index}
@@ -32,6 +35,7 @@ const styles = StyleSheet.create({
   image: {
     height: '100%'
   }
+
 })
 
 export default Swipper

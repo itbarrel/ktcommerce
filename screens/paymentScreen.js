@@ -12,6 +12,8 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 
 const PaymentScreen = (props) => {
+  console.log(props, 'PPPPPPPPPPPPP')
+
   const [isModalVisible, setModalVisible] = useState(false)
   const [user, setUser] = useState({})
   const [initialValues, setInitialValues] = useState({
@@ -59,8 +61,8 @@ const PaymentScreen = (props) => {
     setUser(updatedData)
     toggleModal()
   }
-  const totalProductPrice = props.route.params.totalCheckedPrice
-  const checkItem = props.route.params.checkedItems
+  const totalPrice = props.route.params.totalProductPrice
+  const checkItem = props.route.params.allItems
   console.log(checkItem, '.........................')
 
   const toggleModal = () => {
@@ -241,7 +243,7 @@ const PaymentScreen = (props) => {
               </Text>
             </View>
             <View>
-              <Text style={styles.black_text}>DKK{totalProductPrice}</Text>
+              <Text style={styles.black_text}>DKK{totalPrice}</Text>
             </View>
           </View>
           <View style={styles.inner_container}>

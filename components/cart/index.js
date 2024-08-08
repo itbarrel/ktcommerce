@@ -1,44 +1,38 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Text, StyleSheet, TouchableOpacity, View, FlatList } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { CartContext } from '../../Provider/cart'
 import CartCard from './card'
 
 const CartCardListing = (props) => {
-  const [cartData, setCartData] = useState(props.route.params.addToCart)
-  console.log(cartData, 'ppppppp')
+  const { addToCart, setaddToCart } = useContext(CartContext)
+  const allItems = addToCart
+  console.log(allItems, 'PPPPP')
 
   const navigation = useNavigation()
   const handlenavigate = () => {
-    const checkedItems = cartData.filter(item => item.checked)
-    navigation.navigate('PaymentScreen', { checkedItems, totalCheckedPrice })
+    navigation.navigate('PaymentScreen', { allItems, totalProductPrice })
   }
 
   // eslint-disable-next-line camelcase
   const handleDelete = (product_id, size, color, quantity) => {
     // eslint-disable-next-line camelcase
-    const newCartData = cartData.filter(item => !(item.product_id === product_id && item.size === size && item.color === color && item.quantity === quantity))
-    setCartData(newCartData)
+    const newCartData = addToCart.filter(item => !(item.product_id === product_id && item.size === size && item.color === color && item.quantity === quantity))
+    setaddToCart(newCartData)
   }
 
-  const calculateTotalCheckedPrice = (data) => {
-    return data
-      .filter(item => item.checked)
-      .map(item => parseFloat(item.price) * item.quantity)
-      .reduce((acc, total) => acc + total, 0)
-  }
-  const isAtLeastOneItemChecked = () => {
-    return cartData.some(item => item.checked)
-  }
-
-  const totalCheckedPrice = calculateTotalCheckedPrice(cartData)
+  console.log(allItems, '++++++++++++++++')
+  const totalProductPrice = allItems.reduce((acc, item) => {
+    return acc + (item.price * item.quantity)
+  }, 0)
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={cartData}
+        data={addToCart}
         renderItem={({ item }) => <CartCard item={item}
-          setCartData={setCartData}
+          setaddToCart={setaddToCart}
           onDelete={() => handleDelete(item.product_id, item.size, item.color, item.quantity)}
         />}
         keyExtractor={(item, index) => `${item.id}-${index}`}
@@ -47,11 +41,10 @@ const CartCardListing = (props) => {
       <View style={styles.checkoutContainer}>
         <View style={styles.inner_checkout}>
           <View><Text style={styles.total_price}>Subtotal</Text></View>
-          <View><Text style={styles.total_price}>{totalCheckedPrice}DKK</Text></View>
+          <View><Text style={styles.total_price}>{totalProductPrice}DKK</Text></View>
         </View>
         <TouchableOpacity onPress={handlenavigate}
-          disabled={!isAtLeastOneItemChecked()}
-          style={[styles.buttonContainer, !isAtLeastOneItemChecked() && styles.disabledButton]}>
+          style={styles.buttonContainer}>
           <View style={styles.buttonContainer}>
             <Text style={styles.textCart}>CHECK OUT</Text>
           </View>
