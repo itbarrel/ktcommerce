@@ -1,23 +1,36 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { FlatList, View, ActivityIndicator, StyleSheet, Text } from 'react-native'
 import { fetchProducts } from '../../services/product'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import GridProductCard from './gridCard'
-
 import ProductCard from './card'
 
 const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
-  let page = 1
+  const [noMoreProducts, setNoMoreProducts] = useState(false)
+  const pageRef = useRef(1)
 
-  const fetchData = async (page, oldProducts = []) => {
+  const fetchData = async (page, reset = false) => {
     try {
       setLoading(true)
       const res = await fetchProducts({ category: categoryId, search: searchQuery, page })
-      setProducts([...oldProducts, ...res])
+
+      if (res.length === 0) {
+        setNoMoreProducts(true)
+      }
+
+      const newProducts = res.filter(
+        (newProduct) => !products.some((product) => product.id === newProduct.id)
+      )
+
+      if (reset) {
+        setProducts(newProducts)
+      } else {
+        setProducts((prevProducts) => [...prevProducts, ...newProducts])
+      }
     } catch (error) {
-      console.error('Error fetching product:', error)
+      console.error('Error fetching products:', error)
     } finally {
       setLoading(false)
     }
@@ -25,14 +38,18 @@ const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
 
   useEffect(() => {
     setProducts([])
-    page = 1
-    fetchData(page)
+    setNoMoreProducts(false)
+    pageRef.current = 1
+    fetchData(pageRef.current, true)
   }, [categoryId, searchQuery])
 
   const handleLoadMore = () => {
-    page += 1
-    fetchData(page, products)
+    if (!noMoreProducts && !loading) {
+      pageRef.current += 1
+      fetchData(pageRef.current)
+    }
   }
+
   return (
     <FlatList
       data={products}
@@ -48,8 +65,12 @@ const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
                 <ActivityIndicator size="large" color="#0000ff" />
               )
               : (
-                <TouchableOpacity style={styles.button} onPress={handleLoadMore}>
-                  <Text style={styles.buttonText}>Show More</Text>
+                <TouchableOpacity
+                  style={[styles.button, noMoreProducts && styles.disabledButton]}
+                  onPress={handleLoadMore}
+                  disabled={noMoreProducts}
+                >
+                  <Text style={styles.buttonText}>{noMoreProducts ? 'No More Products' : 'Show More'}</Text>
                 </TouchableOpacity>
               )}
           </View>
@@ -58,6 +79,7 @@ const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
     />
   )
 }
+
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#7BCFE9',
@@ -65,8 +87,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center'
   },
+  disabledButton: {
+    backgroundColor: '#cccccc'
+  },
   buttonText: {
-    color: '#fff', // Set the text color
+    color: '#fff',
     fontSize: 16
   }
 })
