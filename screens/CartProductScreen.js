@@ -54,11 +54,9 @@ const CartProductScreen = ({ product }) => {
     const variation = await handleSelectVariation()
 
     setaddToCart(prevArray => {
-      // Find the index of an existing item that matches the product_id, size, and color
       const existingItemIndex = prevArray.findIndex(cartItem => cartItem.product_id === id && cartItem.size === selectedSize && cartItem.color === selectedColor)
 
       if (existingItemIndex !== -1) {
-        // If an existing item is found, add the quantity
         const existingItem = prevArray[existingItemIndex]
         const updatedItem = {
           ...existingItem,
@@ -71,7 +69,6 @@ const CartProductScreen = ({ product }) => {
           ...prevArray.slice(existingItemIndex + 1)
         ]
       } else {
-        // If no matching item is found, create a new item
         const newItem = {
           size: selectedSize,
           color: selectedColor,
@@ -87,7 +84,6 @@ const CartProductScreen = ({ product }) => {
       }
     })
 
-    // Navigate to the cart after a delay to ensure the state update is applied
     setTimeout(async () => {
       CartNavigate()
     }, 1500)
