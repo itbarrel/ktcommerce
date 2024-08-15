@@ -35,7 +35,7 @@ const PaymentScreen = (props) => {
 
   const [initialValues, setInitialValues] = useState({
     first_name: '',
-    last_name: '',
+    sure_name: '',
     phone: '',
     email: '',
     address_1: '',
@@ -52,7 +52,7 @@ const PaymentScreen = (props) => {
 
   const validationSchema = Yup.object().shape({
     first_name: Yup.string().required('First name is required!'),
-    last_name: Yup.string().required('Last name is required!'),
+    sure_name: Yup.string().required('Sure name is required!'),
     phone: Yup.string().required('Contact is required!'),
     address_1: Yup.string().required('Address is required!'),
     postcode: Yup.string().required('Postal code is required!'),
@@ -74,7 +74,7 @@ const PaymentScreen = (props) => {
   const handleSubmit = (values) => {
     const updatedData = {
       first_name: values.first_name,
-      last_name: values.last_name,
+      sure_name: values.sure_name,
       phone: values.phone,
       address_1: values.address_1,
       postcode: values.postcode,
@@ -119,6 +119,8 @@ const PaymentScreen = (props) => {
         set_paid: true
       }
       const response = await CreateOrder(payload)
+      console.log(response, 'KKKKKKKKKKKKK')
+
       Alert.alert(
         'Success',
         'Order placed successfully',
@@ -195,13 +197,13 @@ const PaymentScreen = (props) => {
                       <TextInput
                         style={styles.name_input}
                         placeholderTextColor="#7A8D9C"
-                        placeholder="Last Name"
-                        onChangeText={handleChange('last_name')}
-                        onBlur={handleBlur('last_name')}
-                        value={values.last_name}
+                        placeholder="Sure Name"
+                        onChangeText={handleChange('sure_name')}
+                        onBlur={handleBlur('sure_name')}
+                        value={values.sure_name}
                       />
-                      {touched.last_name && errors.last_name && (
-                        <Text style={styles.errorText}>{errors.last_name}</Text>
+                      {touched.sure_name && errors.sure_name && (
+                        <Text style={styles.errorText}>{errors.sure_name}</Text>
                       )}
                     </View>
                   </View>
@@ -279,7 +281,7 @@ const PaymentScreen = (props) => {
           </View>
           <View style={styles.textSection}>
             <Text style={styles.bold_text}>
-              {user?.first_name || 'FirstName'} {user?.last_name || 'LastName'}
+              {user?.first_name || 'FirstName'} {user?.sure_name || 'LastName'}
             </Text>
             <Text style={styles.black_text}>
               {user?.address_1 || 'Address-1'}
@@ -303,7 +305,7 @@ const PaymentScreen = (props) => {
           </View>
         </View>
 
-        <View style={styles.container}>
+        {/* <View style={styles.container}>
           <View style={styles.inner_container}>
             <View style={styles.location}>
               <Text style={styles.black_text}>Delivery Service</Text>
@@ -323,7 +325,7 @@ const PaymentScreen = (props) => {
               <Text style={styles.bold_text}>$2</Text>
             </View>
           </View>
-        </View>
+        </View> */}
 
         <View style={styles.container}>
           <Text style={styles.description}>Add Description</Text>
@@ -431,7 +433,7 @@ const PaymentScreen = (props) => {
         </View>
         <View>
           <TouchableOpacity onPress={handlePlaceOrder} disabled={!selectedTitle || isEmptyObject(user)}>
-            <View style={[styles.button_container_hold, (!selectedTitle || !user) && styles.disabledButton]}>
+            <View style={[styles.button_container_hold, (!selectedTitle || isEmptyObject(user)) && styles.disabledButton]}>
               <View style={styles.buttonContainer}>
                 <Text style={styles.text_cart}>Place Order</Text>
               </View>
