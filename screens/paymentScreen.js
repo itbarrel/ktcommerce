@@ -6,7 +6,7 @@ import WalletIcon from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native'
 import { Dropdown } from 'react-native-element-dropdown'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
-import { CreateOrder, fetchShipping } from '../services/order'
+import { CreateOrder, fetchShipping, fetchAllCoupons } from '../services/order'
 
 import { Formik } from 'formik'
 import * as Yup from 'yup'
@@ -14,21 +14,16 @@ import * as Yup from 'yup'
 const PaymentScreen = (props) => {
   const [shipping, setShipping] = useState([])
   const [selectedTitle, setSelectedTitle] = useState(null)
-  const [coupon, setCoupon] = useState([])
-  console.log(coupon, 'OOOOOOOOOOO')
+  const [coupons, setCoupons] = useState([])
+  const [couponInputValue, setCouponInputValue] = useState([])
+  const [isApplyDisabled, setIsApplyDisabled] = useState(true)
+  console.log(couponInputValue)
 
-  const handleApply = () => {
-    const newCoupon = { code: couponInputValue }
-    setCoupon([newCoupon])
-    setCouponInputValue('')
-  }
-
-  const [couponInputValue, setCouponInputValue] = useState('')
   const isEmptyObject = (obj) => Object.keys(obj).length === 0
-
   const MethodTitle = selectedTitle?.methodTitle
   const MethodId = selectedTitle?.methodId
   const ShippingPrice = selectedTitle?.ShippingPrice ?? 0
+  const checkItem = props.route.params.allItems
 
   const titles = shipping.map(att => ({ value: att.id, label: att.title, methodId: att.method_id, methodTitle: att.method_title, ShippingPrice: att.settings?.shipping_price?.value })) || []
   const [user, setUser] = useState({})
@@ -46,8 +41,6 @@ const PaymentScreen = (props) => {
     country: ''
   })
 
-  console.log(user, 'LL........Ll')
-
   const navigation = useNavigation()
 
   const validationSchema = Yup.object().shape({
@@ -62,10 +55,12 @@ const PaymentScreen = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchShipping()
-        setShipping(response)
+        const shippingResponse = await fetchShipping()
+        setShipping(shippingResponse)
+        const couponResponse = await fetchAllCoupons()
+        setCoupons(couponResponse)
       } catch (error) {
-        console.error('There was an error fetching the shipping data:', error)
+        console.error('There was an error fetching the data:', error)
       }
     }
 
@@ -89,9 +84,27 @@ const PaymentScreen = (props) => {
   }
   const totalPrice = (props.route.params.totalProductPrice)
   const finalPrice = +totalPrice + +ShippingPrice
+  const [calculatedFinalAmount, setCalculatedFinalAmount] = useState(finalPrice)
 
-  const checkItem = props.route.params.allItems
-  console.log(checkItem, '.........................')
+  useEffect(() => {
+    setCalculatedFinalAmount(finalPrice)
+  }, [finalPrice])
+
+  const handleApply = () => {
+    const newCoupon = { code: couponInputValue }
+    setCouponInputValue(newCoupon)
+    const matchedCoupon = coupons.filter(coupon => coupon?.code === newCoupon?.code?.trim())
+    if (matchedCoupon) {
+      const discountAmount = (matchedCoupon[0]?.amount) / 100 * totalPrice
+      const calculatedFinalAmount = finalPrice - (discountAmount || 0)
+      setCalculatedFinalAmount(calculatedFinalAmount)
+      setIsApplyDisabled(true)
+    }
+  }
+  const handleInputChange = (text) => {
+    setCouponInputValue(text)
+    setIsApplyDisabled(false)
+  }
 
   const handlePlaceOrder = async () => {
     try {
@@ -101,7 +114,6 @@ const PaymentScreen = (props) => {
         quantity: item.quantity
       }))
 
-      console.log(lineItems, 'JJJJJJJJJJ')
       const payload = {
         billing: user,
         shipping: user,
@@ -113,14 +125,12 @@ const PaymentScreen = (props) => {
             total: ShippingPrice
           }
         ],
-        coupon_lines: coupon,
+        coupon_lines: [couponInputValue],
         payment_method: 'bacs',
         payment_method_title: 'Direct Bank Transfer',
         set_paid: true
       }
       const response = await CreateOrder(payload)
-      console.log(response, 'KKKKKKKKKKKKK')
-
       Alert.alert(
         'Success',
         'Order placed successfully',
@@ -304,36 +314,12 @@ const PaymentScreen = (props) => {
             ))}
           </View>
         </View>
-
-        {/* <View style={styles.container}>
-          <View style={styles.inner_container}>
-            <View style={styles.location}>
-              <Text style={styles.black_text}>Delivery Service</Text>
-            </View>
-            <View>
-              <Text style={styles.black_text}>Shipmanod </Text>
-            </View>
-          </View>
-          <View style={styles.line_container}>
-            <View style={styles.line} />
-          </View>
-          <View style={styles.inner_container}>
-            <View style={styles.location}>
-              <Text style={styles.bold_text}>Express Delivery</Text>
-            </View>
-            <View>
-              <Text style={styles.bold_text}>$2</Text>
-            </View>
-          </View>
-        </View> */}
-
         <View style={styles.container}>
           <Text style={styles.description}>Add Description</Text>
           <TextInput
             style={styles.input}
             multiline={true}
           />
-
           <View style={styles.dropdownContainer}>
             <View style={styles.text_container}>
               <Text style={styles.inner_text}>Shipping Method</Text>
@@ -362,12 +348,14 @@ const PaymentScreen = (props) => {
                 placeholderTextColor="#7A8D9C"
                 placeholder="Apply Coupon"
                 value={couponInputValue}
-                onChangeText={(text) => setCouponInputValue(text)}
+                onChangeText={handleInputChange}
               />
 
             </View>
             <View style={styles.inputContainer}>
-              <TouchableOpacity onPress={handleApply}>
+              <TouchableOpacity onPress={handleApply}
+                disabled={isApplyDisabled}
+              >
                 <View style={styles.Apply_button}>
                   <Text>Apply</Text>
 
@@ -427,7 +415,7 @@ const PaymentScreen = (props) => {
               <Text style={styles.bold_text}>Total Payment</Text>
             </View>
             <View>
-              <Text style={styles.black_text}>DKK{finalPrice}</Text>
+              <Text style={styles.black_text}>DKK{calculatedFinalAmount}</Text>
             </View>
           </View>
         </View>
