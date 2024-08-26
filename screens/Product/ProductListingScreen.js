@@ -4,7 +4,6 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import MenuCategoryPicker from '../../components/Picker/MenuCategory'
 import ProductListing from '../../components/Product'
 import Icon from 'react-native-vector-icons/Ionicons'
-
 import Modal from 'react-native-modal'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -85,14 +84,14 @@ const ProductListingScreen = ({ isModalVisible, setModalVisible, toggleModal, cl
       >
         <View style={styles.modalContent}>
           <ScrollView>
-            {/* <View style={styles.pickerContainer}>
+            <View style={styles.pickerContainer}>
               <MenuCategoryPicker
                 all={true}
                 selection={false}
                 categoryId={categoryId}
                 setCategoryId={setCategoryId}
               />
-            </View> */}
+            </View>
           </ScrollView>
         </View>
       </Modal>

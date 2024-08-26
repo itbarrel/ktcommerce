@@ -27,55 +27,57 @@ const TabNavigator = () => {
   const navigateCartscreen = () => {
     navigation.navigate('CartListing')
   }
-  return (<Tab.Navigator
-    screenOptions={({ route }) => ({
-      tabBarVisible: true,
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName
-        if (route.name === 'Home') {
-          iconName = 'home'
-        } else if (route.name === 'Settings') {
-          iconName = 'settings'
-        } else if (route.name === 'Profile') {
-          iconName = 'person'
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarVisible: true,
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName
+          if (route.name === 'Home') {
+            iconName = 'home'
+          } else if (route.name === 'Settings') {
+            iconName = 'settings'
+          } else if (route.name === 'Profile') {
+            iconName = 'person'
+          }
+          // const iconName = iconMapping[route.name]
+          return <Icon name={iconName} size={size} color={color} />
         }
-        // const iconName = iconMapping[route.name]
-        return <Icon name={iconName} size={size} color={color} />
-      }
-    })}
-  >
-    <Tab.Screen name="Home" component={ProductListingScreen}
-      options={{
-        headerTitle: () => (
-          <View style={styles.container}>
-            <Image
-              source={require('../assets/images/logo_sort.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-            <TouchableOpacity onPress={navigateCartscreen}>
-              <AntDesign name="shoppingcart" size={20} color="#000" style={styles.icon} />
-            </TouchableOpacity>
-          </View>
-        ),
-        headerLeft: () => null
-      }}
-    />
-    <Tab.Screen name="Profile" component={ProfileScreen}
-      options={{
-        headerTitle: () => (
-          <View style={styles.container}>
-            <Image
-              source={require('../assets/images/logo_sort.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </View>
-        )
-      }}
+      })}
+    >
+      <Tab.Screen name="Home" component={ProductListingScreen}
+        options={{
+          headerTitle: () => (
+            <View style={styles.container}>
+              <Image
+                source={require('../assets/images/logo_sort.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+              <TouchableOpacity onPress={navigateCartscreen}>
+                <AntDesign name="shoppingcart" size={20} color="#000" style={styles.icon} />
+              </TouchableOpacity>
 
-    />
-  </Tab.Navigator>)
+            </View>
+          ),
+          headerLeft: () => null
+        }}
+      />
+      <Tab.Screen name="Profile" component={ProfileScreen}
+        options={{
+          headerTitle: () => (
+            <View style={styles.container}>
+              <Image
+                source={require('../assets/images/logo_sort.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          )
+        }}
+
+      />
+    </Tab.Navigator>)
 }
 
 const AppNavigator = () => {
@@ -109,17 +111,17 @@ const AppNavigator = () => {
         options={{
           headerTitle: () => (
             <View style={styles.container}>
-              <Image
+              {/* <Image
                 source={require('../assets/images/logo_sort.png')}
                 style={styles.logo}
                 resizeMode="contain"
-              />
-              {/* <TouchableOpacity
+              /> */}
+              <TouchableOpacity
                 style={styles.filterButton}
                 onPress={toggleModal}
               >
                 <Icon name="menu" color='black ' size={35} />
-              </TouchableOpacity> */}
+              </TouchableOpacity>
             </View>
           ),
           headerLeft: () => null
