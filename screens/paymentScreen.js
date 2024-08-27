@@ -1,13 +1,12 @@
 /* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, Text, Image, TextInput, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native'
+import { View, StyleSheet, Text, Image, TextInput, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import WalletIcon from 'react-native-vector-icons/AntDesign'
-import { useNavigation } from '@react-navigation/native'
 import { Dropdown } from 'react-native-element-dropdown'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { CreateOrder, fetchShipping, fetchAllCoupons } from '../services/order'
-
+import { WebView } from 'react-native-webview'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 
@@ -16,21 +15,26 @@ const PaymentScreen = (props) => {
   const [selectedTitle, setSelectedTitle] = useState(null)
   const [coupons, setCoupons] = useState([])
   const [couponInputValue, setCouponInputValue] = useState([])
+  const [showWebView, setShowWebView] = useState(false)
+  const [paymentUrl, setPaymentUrl] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const [errorMessage, setErrorMessage] = useState('')
   const [isApplyDisabled, setIsApplyDisabled] = useState(true)
   const isEmptyObject = (obj) => Object.keys(obj).length === 0
   const MethodTitle = selectedTitle?.methodTitle
   const MethodId = selectedTitle?.methodId
 
   const ShippingPrice = selectedTitle?.ShippingPrice ?? 0
+
   const checkItem = props.route.params.allItems
 
   const titles = shipping.map(att => ({ value: att.id, label: att.title, methodId: att.method_id, methodTitle: att.method_title, ShippingPrice: att.settings?.shipping_price?.value })) || []
   const [user, setUser] = useState({})
-  console.log(user, 'UUUUUUUUUUU')
 
   const [initialValues, setInitialValues] = useState({
     first_name: '',
-    sure_name: '',
+    last_name: '',
     phone: '',
     email: '',
     address_1: '',
@@ -41,11 +45,9 @@ const PaymentScreen = (props) => {
     country: ''
   })
 
-  const navigation = useNavigation()
-
   const validationSchema = Yup.object().shape({
     first_name: Yup.string().required('First name is required!'),
-    sure_name: Yup.string().required('Sure name is required!'),
+    last_name: Yup.string().required('Last name is required!'),
     phone: Yup.string().required('Contact is required!'),
     address_1: Yup.string().required('Address is required!'),
     postcode: Yup.string().required('Postal code is required!'),
@@ -69,7 +71,7 @@ const PaymentScreen = (props) => {
   const handleSubmit = (values) => {
     const updatedData = {
       first_name: values.first_name,
-      sure_name: values.sure_name,
+      last_name: values.last_name,
       phone: values.phone,
       address_1: values.address_1,
       postcode: values.postcode,
@@ -92,21 +94,29 @@ const PaymentScreen = (props) => {
 
   const handleApply = () => {
     const newCoupon = { code: couponInputValue }
-    setCouponInputValue(newCoupon)
     const matchedCoupon = coupons.filter(coupon => coupon?.code === newCoupon?.code?.trim())
-    if (matchedCoupon) {
+
+    if (matchedCoupon.length > 0) {
       const discountAmount = (matchedCoupon[0]?.amount) / 100 * totalPrice
       const calculatedFinalAmount = finalPrice - (discountAmount || 0)
       setCalculatedFinalAmount(calculatedFinalAmount)
       setIsApplyDisabled(true)
+      setCouponInputValue(newCoupon)
+      setErrorMessage('')
+    } else {
+      console.log('Coupon unmatched')
+      setCouponInputValue([])
+      setErrorMessage('Coupon is unmatched')
     }
   }
+
   const handleInputChange = (text) => {
     setCouponInputValue(text)
     setIsApplyDisabled(false)
   }
 
   const handlePlaceOrder = async () => {
+    setLoading(true)
     try {
       const lineItems = checkItem.map((item) => ({
         variation_id: item.variation_id,
@@ -131,33 +141,34 @@ const PaymentScreen = (props) => {
         // set_paid: true
       }
       const response = await CreateOrder(payload)
-
-      if (response && response.id && response.order_key) {
-        const orderId = response.id
-        const orderKey = response.order_key
-
-        console.log('Order ID:', orderId)
-        console.log('Order Key:', orderKey)
-
-        Alert.alert(
-          'Success',
-          'Order placed successfully',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                Linking.openURL(response.payment_url)
-                navigation.navigate('Home')
-              }
+      Alert.alert(
+        'Success',
+        'Order placed successfully',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              setPaymentUrl(response.payment_url)
+              setShowWebView(true)
             }
-          ]
-        )
-      }
+          }
+        ]
+      )
     } catch (error) {
       console.error('Error placing order:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
+  if (showWebView && paymentUrl) {
+    return (
+      <WebView
+        source={{ uri: paymentUrl }}
+        style={{ flex: 1 }}
+      />
+    )
+  }
   const ProductCard = ({ item }) => (
     <View style={styles.card}>
       <View style={styles.imageSection}>
@@ -222,12 +233,12 @@ const PaymentScreen = (props) => {
                       style={styles.name_input}
                       placeholderTextColor="#7A8D9C"
                       placeholder="Sure Name"
-                      onChangeText={handleChange('sure_name')}
-                      onBlur={handleBlur('sure_name')}
-                      value={values.sure_name}
+                      onChangeText={handleChange('last_name')}
+                      onBlur={handleBlur('last_name')}
+                      value={values.last_name}
                     />
-                    {touched.sure_name && errors.sure_name && (
-                      <Text style={styles.errorText}>{errors.sure_name}</Text>
+                    {touched.last_name && errors.last_name && (
+                      <Text style={styles.errorText}>{errors.last_name}</Text>
                     )}
                   </View>
                 </View>
@@ -304,7 +315,7 @@ const PaymentScreen = (props) => {
           </View>
           <View style={styles.textSection}>
             <Text style={styles.bold_text}>
-              {user?.first_name || 'FirstName'} {user?.sure_name || 'LastName'}
+              {user?.first_name || 'FirstName'} {user?.last_name || 'LastName'}
             </Text>
             <Text style={styles.black_text}>
               {user?.address_1 || 'Address-1'}
@@ -363,7 +374,7 @@ const PaymentScreen = (props) => {
                 value={couponInputValue}
                 onChangeText={handleInputChange}
               />
-
+              {errorMessage && <Text style={{ color: 'red' }}>{errorMessage}</Text>}
             </View>
             <View style={styles.inputContainer}>
               <TouchableOpacity onPress={handleApply}
@@ -434,11 +445,18 @@ const PaymentScreen = (props) => {
         </View>
         <View>
           <TouchableOpacity onPress={handlePlaceOrder} disabled={!selectedTitle || isEmptyObject(user)}>
-            <View style={[styles.button_container_hold, (!selectedTitle || isEmptyObject(user)) && styles.disabledButton]}>
-              <View style={styles.buttonContainer}>
-                <Text style={styles.text_cart}>Place Order</Text>
-              </View>
-            </View>
+            {loading
+              ? (
+                <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
+              )
+              : (
+                <View style={[styles.button_container_hold, (!selectedTitle || isEmptyObject(user)) && styles.disabledButton]}>
+
+                  <View style={styles.buttonContainer}>
+                    <Text style={styles.text_cart}>Place Order</Text>
+                  </View>
+                </View>
+              )}
           </TouchableOpacity>
         </View>
       </ScrollView>
