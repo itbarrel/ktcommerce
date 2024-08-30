@@ -3,18 +3,25 @@ import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { Text, StyleSheet, TouchableOpacity, View, FlatList } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { CartContext } from '../../Provider/cart'
+import { getUser } from '../../utils/storage'
 import CartCard from './card'
 
 const CartCardListing = (props) => {
   const { addToCart, setaddToCart } = useContext(CartContext)
   const allItems = addToCart
-  console.log(allItems, 'PPPPP')
-
   const navigation = useNavigation()
-  const handlenavigate = () => {
-    navigation.navigate('PaymentScreen', { allItems, totalProductPrice })
+  const handleNavigate = async () => {
+    try {
+      const user = await getUser()
+      if (user) {
+        navigation.navigate('PaymentScreen', { allItems, totalProductPrice })
+      } else {
+        navigation.navigate('LoginScreen')
+      }
+    } catch (error) {
+      console.error('Error retrieving user data', error)
+    }
   }
-
   // eslint-disable-next-line camelcase
   const handleDelete = (product_id, size, color, quantity) => {
     // eslint-disable-next-line camelcase
@@ -22,7 +29,6 @@ const CartCardListing = (props) => {
     setaddToCart(newCartData)
   }
 
-  console.log(allItems, '++++++++++++++++')
   const totalProductPrice = allItems.reduce((acc, item) => {
     return acc + (item.price * item.quantity)
   }, 0)
@@ -43,7 +49,7 @@ const CartCardListing = (props) => {
           <View><Text style={styles.total_price}>Subtotal</Text></View>
           <View><Text style={styles.total_price}>{totalProductPrice}DKK</Text></View>
         </View>
-        <TouchableOpacity onPress={handlenavigate}
+        <TouchableOpacity onPress={handleNavigate}
           style={styles.buttonContainer}>
           <View style={styles.buttonContainer}>
             <Text style={styles.textCart}>CHECK OUT</Text>

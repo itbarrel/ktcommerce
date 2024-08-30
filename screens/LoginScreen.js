@@ -1,21 +1,26 @@
 import React, { useState } from 'react'
 import { Text, SafeAreaView, StyleSheet, TextInput, View, TouchableOpacity, Image, Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { login } from '../services/login'
+import { useNavigation } from '@react-navigation/native'
+import { login } from '../services/auth'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 
 const LoginScreen = () => {
-  const [text, setText] = useState('')
-  const [number, setNumber] = useState('')
+  const [userName, setUserName] = useState('')
+  const [password, setPassword] = useState('')
   const [passwordVisible, setPasswordVisible] = useState(false)
+
+  const navigation = useNavigation()
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible)
   }
+
   const handleLogin = async () => {
     try {
-      const response = await login()
+      await login({ username: userName, password })
       Alert.alert('Login successful!')
+      navigation.navigate('Home')
     } catch (error) {
       Alert.alert('Login failed', 'Invalid username or password')
     }
@@ -28,20 +33,19 @@ const LoginScreen = () => {
           <View style={styles.login}>
             <Image source={require('../assets/images/logo_sort.png')} style={styles.logo} />
           </View>
-
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              onChangeText={setText}
+              onChangeText={setUserName}
               placeholder="UserName"
               placeholderTextColor="black"
-              value={text}
+              value={userName}
             />
             <View style={styles.passwordContainer}>
               <TextInput
                 style={styles.passwordInput}
-                onChangeText={setNumber}
-                value={number}
+                onChangeText={setPassword}
+                value={password}
                 placeholder="Password"
                 placeholderTextColor="black"
                 secureTextEntry={!passwordVisible}
@@ -54,10 +58,10 @@ const LoginScreen = () => {
               </TouchableOpacity>
             </View>
           </View>
-
+          {/*
           <TouchableOpacity style={styles.forgotContainer}>
             <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity onPress={handleLogin}>
             <View style={styles.buttonContainerHold}>

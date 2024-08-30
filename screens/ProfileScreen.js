@@ -3,7 +3,7 @@ import ProfileCard from '../components/Profile'
 
 const ProfileScreen = () => {
   return (
-    <ProfileCard/>
+    <ProfileCard />
   )
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -19,6 +19,7 @@ import ProductDetailScreen from '../screens/Product/ProductDetailScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import { verticalScale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -27,6 +28,15 @@ const TabNavigator = () => {
   const navigateCartscreen = () => {
     navigation.navigate('CartListing')
   }
+  const handleLogout = async () => {
+    try {
+      console.log('>>>>>>>>>>>>>>>>>...................mout............')
+      await AsyncStorage.clear()
+      navigation.navigate('Home')
+    } catch (error) {
+    }
+  }
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -72,6 +82,9 @@ const TabNavigator = () => {
                 style={styles.logo}
                 resizeMode="contain"
               />
+              <TouchableOpacity onPress={handleLogout}>
+                <AntDesign name="logout" size={20} color="#000" style={styles.icon} />
+              </TouchableOpacity>
             </View>
           )
         }}

@@ -8,13 +8,13 @@ import { getToken, removeToken, getFingerPrintToken, removeFingerPrintToken } fr
 import { CONSUMER_KEY, CONSUMER_SECRET } from '../urls'
 
 const successStatuses = [200, 201]
-const publicRoutes = ['managers/login']
+const publicRoutes = ['kt-commerce/login']
 
 export default class ApiClient {
   constructor (apiUrl) {
     const config = {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
         Accept: 'application/json',
         Connection: 'keep-alive'
       }
@@ -38,12 +38,11 @@ export default class ApiClient {
     this.client = setResponse(this.client)
   }
 
-  async getConfigurations (path, formData = false) {
+  async getConfigurations (path, { bearer = false }) {
     const token = publicRoutes.includes(path) ? null : await getToken()
+    console.log(publicRoutes.includes(path), 'tokentoken', await getToken())
     const { headers } = this.config
-    const internalHeaders = (formData)
-      ? { ...headers, 'Content-Type': 'multipart/form-data', Authorization: token }
-      : { ...headers, Authorization: token }
+    const internalHeaders = { ...headers, Authorization: bearer ? `Bearer ${token}` : token }
 
     const configuration = token
       ? { ...this.config, headers: internalHeaders }
@@ -55,22 +54,24 @@ export default class ApiClient {
     return { ...this.wocommerce_keys, ...obj }
   }
 
-  async get (path, data) {
+  async get (path, data, options = {}) {
+    const url = withQuery(this.apiUrl + path, await this.getWOCommerceKeys(data))
+    try {
+      console.log(await this.getConfigurations(path, options))
+
+      return await this.checkStatus(
+        await this.client.get(url, await this.getConfigurations(path, options))
+      )
+    } catch (error) {
+      return await this.handleError(error, path)
+    }
+  }
+
+  async post (path, data, options = {}, callback = () => {}) {
     const url = withQuery(this.apiUrl + path, await this.getWOCommerceKeys(data))
     try {
       return await this.checkStatus(
-        await this.client.get(url, await this.getConfigurations(path))
-      )
-    } catch (error) {
-      return await this.handleError(error, path)
-    }
-  }
-
-  async post (path, data, callback) {
-    const url = withQuery(this.apiUrl + path, await this.getWOCommerceKeys(data))
-    try {
-      return await this.checkStatus(
-        await this.client.post(url, data, await this.getConfigurations(path)),
+        await this.client.post(url, data, await this.getConfigurations(path, options)),
         callback
       )
     } catch (error) {
@@ -78,10 +79,10 @@ export default class ApiClient {
     }
   }
 
-  async put (path, data, callback) {
+  async put (path, data, options = {}, callback = () => {}) {
     try {
       return await this.checkStatus(
-        await this.client.put(this.apiUrl + path, data, await this.getConfigurations(path)),
+        await this.client.put(this.apiUrl + path, data, await this.getConfigurations(path, options)),
         callback
       )
     } catch (error) {
@@ -89,22 +90,11 @@ export default class ApiClient {
     }
   }
 
-  async putFormData (path, data, callback) {
-    try {
-      return await this.checkStatus(
-        await this.client.put(this.apiUrl + path, data, await this.getConfigurations(path, true)),
-        callback
-      )
-    } catch (error) {
-      return await this.handleError(error, path)
-    }
-  }
-
-  async delete (path, data) {
+  async delete (path, data, options = {}) {
     const url = withQuery(this.apiUrl + path, data)
     try {
       return await this.checkStatus(
-        await this.client.delete(url, await this.getConfigurations(path))
+        await this.client.delete(url, await this.getConfigurations(path, options))
       )
     } catch (error) {
       return await this.handleError(error, path)
