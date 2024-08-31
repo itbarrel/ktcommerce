@@ -1,5 +1,5 @@
 import apiClient from '../utils/apiClient'
-import { setToken, setUser } from '../utils/storage'
+import { setToken, setUser, setId } from '../utils/storage'
 import { fetchMyDetail } from './user'
 
 export async function login (data) {
@@ -7,10 +7,14 @@ export async function login (data) {
   const { token } = response
   if (token) {
     await setToken(token)
-    console.log('responseresponseresponse', response)
-    console.log('JSON.stringify(response)', JSON.stringify(response))
-    await setUser(JSON.stringify(response))
+    const detailResponse = await fetchMyDetail()
+    const UserId = detailResponse.id
+    const userData = {
+      response
+
+    }
+
+    await setUser(JSON.stringify(userData))
+    await setId(JSON.stringify(UserId))
   }
-  const respons = await fetchMyDetail()
-  console.log(respons, 'ssssssssssssssss')
 }

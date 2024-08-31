@@ -30,7 +30,6 @@ const TabNavigator = () => {
   }
   const handleLogout = async () => {
     try {
-      console.log('>>>>>>>>>>>>>>>>>...................mout............')
       await AsyncStorage.clear()
       navigation.navigate('Home')
     } catch (error) {

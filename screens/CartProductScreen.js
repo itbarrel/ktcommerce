@@ -8,13 +8,9 @@ import { RetrieveVariation } from '../services/order'
 import { CartContext } from '../Provider/cart'
 
 const CartProductScreen = ({ product }) => {
-  console.log(product.price, '::::::::::')
-
   const { setaddToCart } = useContext(CartContext)
-
   const { id, price, name } = product
   const imageUrl = product?.images?.[0]?.src || ''
-
   const navigation = useNavigation()
   const CartNavigate = () => {
     navigation.navigate('CartListing')
@@ -40,7 +36,6 @@ const CartProductScreen = ({ product }) => {
   const handleSelectVariation = async (search) => {
     setIsLoading(true)
     try {
-      console.log(id, selectedSize, selectedColor)
       const response = await RetrieveVariation(id, selectedSize, selectedColor)
       return response
     } catch (error) {

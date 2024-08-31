@@ -1,27 +1,43 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
-import { Text, StyleSheet, TouchableOpacity, View, FlatList } from 'react-native'
+import { Text, StyleSheet, ActivityIndicator, TouchableOpacity, View, FlatList } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { fetchMyInformation } from '../../services/user'
 import { CartContext } from '../../Provider/cart'
-import { getUser } from '../../utils/storage'
+import { getUser, getId } from '../../utils/storage'
 import CartCard from './card'
 
 const CartCardListing = (props) => {
   const { addToCart, setaddToCart } = useContext(CartContext)
+  const [userDetail, setUserDetail] = useState([])
+  const [loading, setLoading] = useState(false)
+
   const allItems = addToCart
   const navigation = useNavigation()
   const handleNavigate = async () => {
     try {
+      const id = await getId() // Get the ID
+      setLoading(true)
+
+      let userInformation = null
+      if (id) {
+        userInformation = await fetchMyInformation(id)
+        setUserDetail(userInformation)
+      }
+
       const user = await getUser()
       if (user) {
-        navigation.navigate('PaymentScreen', { allItems, totalProductPrice })
+        navigation.navigate('PaymentScreen', { userDetail: userInformation, allItems, totalProductPrice })
       } else {
         navigation.navigate('LoginScreen')
       }
     } catch (error) {
       console.error('Error retrieving user data', error)
+    } finally {
+      setLoading(false)
     }
   }
+
   // eslint-disable-next-line camelcase
   const handleDelete = (product_id, size, color, quantity) => {
     // eslint-disable-next-line camelcase
@@ -49,13 +65,21 @@ const CartCardListing = (props) => {
           <View><Text style={styles.total_price}>Subtotal</Text></View>
           <View><Text style={styles.total_price}>{totalProductPrice}DKK</Text></View>
         </View>
-        <TouchableOpacity onPress={handleNavigate}
-          style={styles.buttonContainer}>
-          <View style={styles.buttonContainer}>
-            <Text style={styles.textCart}>CHECK OUT</Text>
-          </View>
-        </TouchableOpacity>
+        {loading
+          ? (
+            <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
+          )
+          : (
+            <TouchableOpacity onPress={handleNavigate}
+              style={styles.buttonContainer}>
+              <View style={styles.buttonContainer}>
+                <Text style={styles.textCart}>CHECK OUT</Text>
+              </View>
+            </TouchableOpacity>
+          )
+        }
       </View>
+
     </View>
   )
 }

@@ -8,6 +8,7 @@ import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { CreateOrder, fetchShipping, fetchAllCoupons } from '../services/order'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { WebView } from 'react-native-webview'
+
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 
@@ -26,38 +27,11 @@ const PaymentScreen = (props) => {
   const isEmptyObject = (obj) => Object.keys(obj).length === 0
   const MethodTitle = selectedTitle?.methodTitle
   const MethodId = selectedTitle?.methodId
-  console.log(MethodId, '>>>>>>>>>>>>>>>>>>')
-  console.log(MethodTitle, '>>>>>>>>>>>>>>>>')
-
   const ShippingPrice = selectedTitle?.ShippingPrice ?? 0
-  console.log(ShippingPrice, '<<<<<<<<<<<<<')
-
   const checkItem = props.route.params.allItems
-
+  const userDetail = props.route.params.userDetail
   const titles = shipping.map(att => ({ value: att.id, label: att.title, methodId: att.method_id, methodTitle: att.method_title, ShippingPrice: att.settings?.shipping_price?.value })) || []
   const [user, setUser] = useState({})
-  console.log(user, '.........$$$$$$$$$.....')
-
-  const [storedUser, setStoredUser] = useState(null)
-
-  useEffect(() => {
-    const checkStoredData = async () => {
-      try {
-        const userData = await AsyncStorage.getItem('user')
-        if (userData !== null) {
-          // Data found in local storage
-          setStoredUser(JSON.parse(userData))
-          console.log('User data found in AsyncStorage:', JSON.parse(userData))
-        } else {
-          console.log('No user data found in AsyncStorage')
-        }
-      } catch (error) {
-        console.error('Error retrieving data from AsyncStorage:', error)
-      }
-    }
-
-    checkStoredData()
-  }, [])
 
   const [initialValues, setInitialValues] = useState({
     first_name: '',
@@ -72,10 +46,10 @@ const PaymentScreen = (props) => {
     country: ''
   })
   useEffect(() => {
-    if (storedUser) {
-      setInitialValues(storedUser)
+    if (userDetail.billing) {
+      setInitialValues(userDetail.billing)
     }
-  }, [storedUser])
+  }, [userDetail.billing])
 
   const validationSchema = Yup.object().shape({
     first_name: Yup.string().required('First name is required!'),

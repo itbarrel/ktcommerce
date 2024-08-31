@@ -33,7 +33,13 @@ export const getUser = () => {
 export const setUser = (data) => {
   return AsyncStorage.setItem(STORAGE_USER_KEY, data)
 }
+export const getId = () => {
+  return AsyncStorage.getItem(STORAGE_USER_KEY)
+}
 
+export const setId = (data) => {
+  return AsyncStorage.setItem(STORAGE_USER_KEY, data)
+}
 export const removeUser = (key) => {
   return AsyncStorage.removeItem(STORAGE_USER_KEY)
 }
