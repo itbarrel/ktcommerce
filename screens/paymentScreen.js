@@ -16,7 +16,7 @@ const PaymentScreen = (props) => {
   const [shipping, setShipping] = useState([])
   const [selectedTitle, setSelectedTitle] = useState(null)
   const [coupons, setCoupons] = useState([])
-  const [couponInputValue, setCouponInputValue] = useState([])
+  const [couponInputValue, setCouponInputValue] = useState()
 
   const [showWebView, setShowWebView] = useState(false)
   const [paymentUrl, setPaymentUrl] = useState('')
@@ -87,7 +87,6 @@ const PaymentScreen = (props) => {
     setUser(updatedData)
     try {
       await AsyncStorage.setItem('user', JSON.stringify(updatedData))
-      console.log('User data stored in AsyncStorage:', updatedData)
     } catch (error) {
       console.error('Error storing user data:', error)
     }
@@ -116,8 +115,7 @@ const PaymentScreen = (props) => {
       setCouponInputValue(newCoupon)
       setErrorMessage('')
     } else {
-      console.log('Coupon unmatched')
-      setCouponInputValue([])
+      setCouponInputValue(null)
       setErrorMessage('Coupon is unmatched')
     }
   }
@@ -142,12 +140,11 @@ const PaymentScreen = (props) => {
         line_items: lineItems,
         shipping_lines: [
           {
-            method_id: MethodId,
-            method_title: MethodTitle,
-            total: ShippingPrice
+            method_id: 'Shipmondo',
+            method_title: 'Shipmondo'
           }
         ],
-        coupon_lines: couponInputValue,
+        coupon_lines: [couponInputValue ?? []].flat(),
         payment_method: 'quickpay',
         payment_method_title: 'quickpay'
         // set_paid: true
@@ -346,7 +343,7 @@ const PaymentScreen = (props) => {
             style={styles.input}
             multiline={true}
           />
-          <View style={styles.dropdownContainer}>
+          {/* <View style={styles.dropdownContainer}>
             <View style={styles.text_container}>
               <Text style={styles.inner_text}>Shipping Method</Text>
               <Dropdown
@@ -366,7 +363,7 @@ const PaymentScreen = (props) => {
                 }}
               />
             </View>
-          </View>
+          </View> */}
           <View style={styles.text_container}>
             <View style={styles.inputContainer}>
               <TextInput
@@ -403,12 +400,12 @@ const PaymentScreen = (props) => {
                 size={moderateScale(18)}
                 color='#7A8D9C'
               />
-              <Text style={styles.pay_text}>My Pay</Text>
-              <WalletIcon
+              <Text style={styles.pay_text}>Quick Pay</Text>
+              {/* <WalletIcon
                 name='rightcircle'
                 size={moderateScale(18)}
                 color='#7A8D9C'
-              />
+              /> */}
             </View>
           </View>
           <View style={styles.line_container}>
@@ -432,7 +429,7 @@ const PaymentScreen = (props) => {
             </View>
             <View>
               <Text style={styles.black_text}>
-                {ShippingPrice !== 0 ? `DKK${ShippingPrice}` : 'Free'}
+                {ShippingPrice !== 0 ? `DKK${ShippingPrice}` : 'Shipmando'}
               </Text>
             </View>
           </View>
@@ -442,17 +439,18 @@ const PaymentScreen = (props) => {
             </View>
             <View>
               <Text style={styles.black_text}>DKK{calculatedFinalAmount}</Text>
+              <Text style={styles.black_text1}>(Excl.VAT)</Text>
             </View>
           </View>
         </View>
         <View>
-          <TouchableOpacity onPress={handlePlaceOrder} disabled={!selectedTitle || isEmptyObject(user)}>
+          <TouchableOpacity onPress={handlePlaceOrder} disabled={ isEmptyObject(user)}>
             {loading
               ? (
                 <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
               )
               : (
-                <View style={[styles.button_container_hold, (!selectedTitle || isEmptyObject(user)) && styles.disabledButton]}>
+                <View style={[styles.button_container_hold, (isEmptyObject(user)) && styles.disabledButton]}>
 
                   <View style={styles.buttonContainer}>
                     <Text style={styles.text_cart}>Place Order</Text>
@@ -498,6 +496,11 @@ const styles = StyleSheet.create({
   black_text: {
     fontSize: moderateScale(15),
     color: '#7A8D9C'
+  },
+  black_text1: {
+    fontSize: moderateScale(9),
+    color: '#7A8D9C',
+    textAlign: 'center'
   },
   bold_text: {
     fontWeight: 'bold',

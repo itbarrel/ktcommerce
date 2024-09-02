@@ -16,7 +16,7 @@ const CartCardListing = (props) => {
   const navigation = useNavigation()
   const handleNavigate = async () => {
     try {
-      const id = await getId() // Get the ID
+      const id = await getId()
       setLoading(true)
 
       let userInformation = null
