@@ -3,9 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, Text, Image, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import WalletIcon from 'react-native-vector-icons/AntDesign'
-import { Dropdown } from 'react-native-element-dropdown'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
-import { CreateOrder, fetchShipping, fetchAllCoupons } from '../services/order'
+import { CreateOrder, fetchAllCoupons } from '../services/order'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { WebView } from 'react-native-webview'
 
@@ -13,24 +12,16 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 
 const PaymentScreen = (props) => {
-  const [shipping, setShipping] = useState([])
-  const [selectedTitle, setSelectedTitle] = useState(null)
   const [coupons, setCoupons] = useState([])
   const [couponInputValue, setCouponInputValue] = useState()
-
   const [showWebView, setShowWebView] = useState(false)
   const [paymentUrl, setPaymentUrl] = useState('')
   const [loading, setLoading] = useState(false)
-
   const [errorMessage, setErrorMessage] = useState('')
   const [isApplyDisabled, setIsApplyDisabled] = useState(true)
   const isEmptyObject = (obj) => Object.keys(obj).length === 0
-  const MethodTitle = selectedTitle?.methodTitle
-  const MethodId = selectedTitle?.methodId
-  const ShippingPrice = selectedTitle?.ShippingPrice ?? 0
   const checkItem = props.route.params.allItems
   const userDetail = props.route.params.userDetail
-  const titles = shipping.map(att => ({ value: att.id, label: att.title, methodId: att.method_id, methodTitle: att.method_title, ShippingPrice: att.settings?.shipping_price?.value })) || []
   const [user, setUser] = useState({})
 
   const [initialValues, setInitialValues] = useState({
@@ -46,10 +37,10 @@ const PaymentScreen = (props) => {
     country: ''
   })
   useEffect(() => {
-    if (userDetail.billing) {
-      setInitialValues(userDetail.billing)
+    if (userDetail?.billing) {
+      setInitialValues(userDetail?.billing)
     }
-  }, [userDetail.billing])
+  }, [userDetail?.billing])
 
   const validationSchema = Yup.object().shape({
     first_name: Yup.string().required('First name is required!'),
@@ -63,8 +54,6 @@ const PaymentScreen = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const shippingResponse = await fetchShipping()
-        setShipping(shippingResponse)
         const couponResponse = await fetchAllCoupons()
         setCoupons(couponResponse)
       } catch (error) {
@@ -96,7 +85,7 @@ const PaymentScreen = (props) => {
     setInitialValues(user)
   }
   const totalPrice = (props.route.params.totalProductPrice)
-  const finalPrice = +totalPrice + +ShippingPrice
+  const finalPrice = +totalPrice
   const [calculatedFinalAmount, setCalculatedFinalAmount] = useState(finalPrice)
 
   useEffect(() => {
@@ -149,7 +138,6 @@ const PaymentScreen = (props) => {
         payment_method_title: 'quickpay'
         // set_paid: true
       }
-
       const response = await CreateOrder(payload)
       setPaymentUrl(response.payment_url)
       setShowWebView(true)
@@ -343,27 +331,6 @@ const PaymentScreen = (props) => {
             style={styles.input}
             multiline={true}
           />
-          {/* <View style={styles.dropdownContainer}>
-            <View style={styles.text_container}>
-              <Text style={styles.inner_text}>Shipping Method</Text>
-              <Dropdown
-                style={styles.dropdown}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                itemTextStyle={styles.textColor}
-                data={titles}
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder={titles.length === 0 ? 'Not available' : 'Methods'}
-                value={selectedTitle}
-                labelStyle={styles.labelStyle}
-                onChange={item => {
-                  setSelectedTitle(item)
-                }}
-              />
-            </View>
-          </View> */}
           <View style={styles.text_container}>
             <View style={styles.inputContainer}>
               <TextInput
@@ -429,7 +396,7 @@ const PaymentScreen = (props) => {
             </View>
             <View>
               <Text style={styles.black_text}>
-                {ShippingPrice !== 0 ? `DKK${ShippingPrice}` : 'Shipmando'}
+               Shipmando
               </Text>
             </View>
           </View>

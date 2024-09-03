@@ -56,8 +56,6 @@ export default class ApiClient {
   async get (path, data, options = {}) {
     const url = withQuery(this.apiUrl + path, await this.getWOCommerceKeys(data))
     try {
-      console.log(await this.getConfigurations(path, options))
-
       return await this.checkStatus(
         await this.client.get(url, await this.getConfigurations(path, options))
       )

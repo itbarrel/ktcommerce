@@ -9,7 +9,6 @@ import CartCard from './card'
 
 const CartCardListing = (props) => {
   const { addToCart, setaddToCart } = useContext(CartContext)
-  const [userDetail, setUserDetail] = useState([])
   const [loading, setLoading] = useState(false)
 
   const allItems = addToCart
@@ -22,14 +21,13 @@ const CartCardListing = (props) => {
       let userInformation = null
       if (id) {
         userInformation = await fetchMyInformation(id)
-        setUserDetail(userInformation)
       }
 
       const user = await getUser()
       if (user) {
         navigation.navigate('PaymentScreen', { userDetail: userInformation, allItems, totalProductPrice })
       } else {
-        navigation.navigate('LoginScreen')
+        navigation.navigate('PaymentScreen', { allItems, totalProductPrice })
       }
     } catch (error) {
       console.error('Error retrieving user data', error)
