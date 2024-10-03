@@ -1,21 +1,30 @@
 import React, { useState, useCallback } from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { fetchMyInformation } from '../../services/user'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { getId } from '../../utils/storage'
 import Icon from 'react-native-vector-icons/AntDesign'
 import LocationIcon from 'react-native-vector-icons/MaterialIcons'
 import DocumentIcon from 'react-native-vector-icons/Entypo'
-import { fetchMyInformation } from '../../services/user'
-import { useFocusEffect } from '@react-navigation/native'
-import { getId } from '../../utils/storage'
 
 const ProfileCard = () => {
   const [user, setUser] = useState('')
   const [loading, setLoading] = useState(false)
+  const navigation = useNavigation()
+
+  const handleLogin = () => {
+    navigation.navigate('LoginScreen')
+  }
+  const handleOrder = () => {
+    navigation.navigate('OrderScreen')
+  }
   useFocusEffect(
     useCallback(() => {
       const fetchData = async () => {
         setLoading(true)
         try {
           const id = await getId()
+          console.log(id, '......................')
 
           if (id) {
             const response = await fetchMyInformation(id)
@@ -53,7 +62,7 @@ const ProfileCard = () => {
             )
             : (
               <View>
-                <Text style={styles.user_name}>{user?.username || 'User'}</Text>
+                <Text style={styles.user_name}>{user?.username || 'Guest User'}</Text>
                 <Text style={styles.user_email}>{user?.email || 'user@gmail.com'}</Text>
               </View>
             )
@@ -85,7 +94,7 @@ const ProfileCard = () => {
               <Text style={styles.text}>My Address</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleOrder}>
             <View style={styles.card_baar}>
               <View>
                 <DocumentIcon
@@ -97,28 +106,16 @@ const ProfileCard = () => {
               <Text style={styles.text}>My Order</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleLogin}>
             <View style={styles.card_baar}>
               <View>
                 <Icon
-                  name='hearto'
+                  name='login'
                   size={18}
                   color="#7A8D9C"
                 />
               </View>
-              <Text style={styles.text}>My Favourites</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={styles.card_baar}>
-              <View>
-                <Icon
-                  name='setting'
-                  size={18}
-                  color="#7A8D9C"
-                />
-              </View>
-              <Text style={styles.text}>Settings</Text>
+              <Text style={styles.text}>Login</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -171,7 +168,7 @@ const styles = StyleSheet.create({
     border: 'none',
     flexDirection: 'row',
     padding: 15,
-    margin: 2,
+    margin: 5,
     borderColor: '#f0efee',
     borderWidth: 1
   },
@@ -183,7 +180,7 @@ const styles = StyleSheet.create({
   },
   card_baar_hold:
   {
-    marginTop: -40
+    // marginTop: -40
   }
 
 })

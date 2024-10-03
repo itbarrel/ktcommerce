@@ -7,7 +7,7 @@ import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { CreateOrder, fetchAllCoupons } from '../services/order'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { WebView } from 'react-native-webview'
-
+import { getId, setItem, getItem } from '../utils/storage'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 
@@ -22,7 +22,10 @@ const PaymentScreen = (props) => {
   const isEmptyObject = (obj) => Object.keys(obj).length === 0
   const checkItem = props.route.params.allItems
   const userDetail = props.route.params.userDetail
+  console.log(userDetail, '.........................')
+
   const [user, setUser] = useState({})
+  console.log(user, 'hhhhhhhhhhhhhhhhhhhhhhhh')
 
   const [initialValues, setInitialValues] = useState({
     first_name: '',
@@ -54,6 +57,9 @@ const PaymentScreen = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const id = await getId()
+        console.log(id, 'idddddddddddddddddddd')
+
         const couponResponse = await fetchAllCoupons()
         setCoupons(couponResponse)
       } catch (error) {
@@ -133,12 +139,15 @@ const PaymentScreen = (props) => {
             method_title: 'Shipmondo'
           }
         ],
+        // customer_id: 14529,
         coupon_lines: [couponInputValue ?? []].flat(),
         payment_method: 'quickpay',
         payment_method_title: 'quickpay'
         // set_paid: true
       }
       const response = await CreateOrder(payload)
+      console.log(response, '..............')
+
       setPaymentUrl(response.payment_url)
       setShowWebView(true)
     } catch (error) {

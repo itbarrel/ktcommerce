@@ -42,7 +42,6 @@ export default class ApiClient {
     const token = publicRoutes.includes(path) ? null : await getToken()
     const { headers } = this.config
     const internalHeaders = { ...headers, Authorization: bearer ? `Bearer ${token}` : token }
-
     const configuration = token
       ? { ...this.config, headers: internalHeaders }
       : this.config

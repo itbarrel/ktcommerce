@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { Image, View, StyleSheet, Text } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { verticalScale } from 'react-native-size-matters'
+import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import SplashScreen from '../screens/SplashScreen'
 import SignUpScreen from '../screens/SignupScreen'
@@ -8,22 +12,23 @@ import HomeScreen from '../screens/Home/HomeScreen'
 import ProductListingScreen from '../screens/Product/ProductListingScreen'
 import ProductListing from '../components/Product'
 import LoginScreen from '../screens/LoginScreen'
-import { Image, View, StyleSheet, Text } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import CartCard from '../components/cart/card'
+import CartCard from '../components/Cart/card'
 import GridProductCard from '../components/Product/gridCard'
-import CartCardListing from '../components/cart'
+import CartCardListing from '../components/Cart'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import PaymentScreen from '../screens/paymentScreen'
+import PaymentScreen from '../screens/PaymentScreen'
 import ProductDetailScreen from '../screens/Product/ProductDetailScreen'
+import OrderListingScreen from '../screens/OrderListingScreen'
 import ProfileScreen from '../screens/ProfileScreen'
-import { verticalScale } from 'react-native-size-matters'
-import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getId } from '../utils/storage'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
 const TabNavigator = () => {
+  const [id, setId] = useState(null) // Use state to store the ID
+  console.log(id, 'ffffffffffff')
+
   const navigation = useNavigation()
   const navigateCartscreen = () => {
     navigation.navigate('CartListing')
@@ -35,7 +40,18 @@ const TabNavigator = () => {
     } catch (error) {
     }
   }
+  useEffect(() => {
+    const fetchId = async () => {
+      try {
+        const fetchedId = await getId() // Assuming getId is an async function
+        setId(fetchedId) // Store the ID in state
+      } catch (error) {
+        console.error('Error fetching ID:', error)
+      }
+    }
 
+    fetchId()
+  }, [])
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -89,7 +105,28 @@ const TabNavigator = () => {
         }}
 
       />
-    </Tab.Navigator>)
+      {/* {id && (
+        <Tab.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            headerTitle: () => (
+              <View style={styles.container}>
+                <Image
+                  source={require('../assets/images/logo_sort.png')}
+                  style={styles.logo}
+                  resizeMode="contain"
+                />
+                <TouchableOpacity onPress={handleLogout}>
+                  <AntDesign name="logout" size={20} color="#000" style={styles.icon} />
+                </TouchableOpacity>
+              </View>
+            )
+          }}
+        />
+      )} */}
+    </Tab.Navigator>
+  )
 }
 
 const AppNavigator = () => {
@@ -141,6 +178,7 @@ const AppNavigator = () => {
       />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      <Stack.Screen name="OrderScreen" component={OrderListingScreen} />
       <Stack.Screen name="CartListing" component={CartCardListing}
         options={{
           headerTitle: () => (

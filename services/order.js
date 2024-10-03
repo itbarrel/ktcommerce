@@ -7,10 +7,14 @@ export function RetrieveVariation (id, size, color) {
 export function CreateOrder (data) {
   return apiClient.post('/wp-json/wc/v3/orders', data)
 }
-export function fetchShipping () {
-  return apiClient.get('wp-json/wc/v3/shipping/zones/2/methods')
-}
+// export function fetchShipping () {
+//   return apiClient.get('wp-json/wc/v3/shipping/zones/2/methods')
+// }
 
 export function fetchAllCoupons () {
   return apiClient.get('wp-json/wc/v3/coupons')
+}
+
+export function fetchAllOrder () {
+  return apiClient.get('wp-json/wc/v3/orders?customer=14531')
 }
