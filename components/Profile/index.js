@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { fetchMyInformation } from '../../services/user'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { getId } from '../../utils/storage'
+import { getId, getToken } from '../../utils/storage'
 import Icon from 'react-native-vector-icons/AntDesign'
 import LocationIcon from 'react-native-vector-icons/MaterialIcons'
 import DocumentIcon from 'react-native-vector-icons/Entypo'
@@ -11,6 +11,23 @@ const ProfileCard = () => {
   const [user, setUser] = useState('')
   const [loading, setLoading] = useState(false)
   const navigation = useNavigation()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useFocusEffect(
+    useCallback(() => {
+      const checkLoginStatus = async () => {
+        const token = await getToken()
+        console.log(token, 'token')
+
+        if (token) {
+          setIsLoggedIn(true)
+        } else {
+          setIsLoggedIn(false)
+        }
+      }
+      checkLoginStatus()
+    }, [])
+  )
 
   const handleLogin = () => {
     navigation.navigate('LoginScreen')
@@ -106,18 +123,22 @@ const ProfileCard = () => {
               <Text style={styles.text}>My Order</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleLogin}>
-            <View style={styles.card_baar}>
-              <View>
-                <Icon
-                  name='login'
-                  size={18}
-                  color="#7A8D9C"
-                />
-              </View>
-              <Text style={styles.text}>Login</Text>
-            </View>
-          </TouchableOpacity>
+          {
+            isLoggedIn
+              ? null
+              : (
+                <TouchableOpacity onPress={handleLogin}>
+                  <View style={styles.card_baar}>
+                    <Icon
+                      name='login'
+                      size={18}
+                      color="#7A8D9C"
+                    />
+                    <Text style={styles.text}>Login</Text>
+                  </View>
+                </TouchableOpacity>
+              )
+          }
         </View>
       </View>
 

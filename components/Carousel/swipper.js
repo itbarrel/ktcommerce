@@ -7,7 +7,7 @@ const Swipper = ({ product }) => {
     <View style={styles.container}>
       <Carousel
         style={styles.carousel}
-        showsControls={false}
+        showsControls={true}
       >
         {product?.images?.map((item, index) => (
           <Image

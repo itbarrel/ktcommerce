@@ -15,6 +15,6 @@ export function fetchAllCoupons () {
   return apiClient.get('wp-json/wc/v3/coupons')
 }
 
-export function fetchAllOrder () {
-  return apiClient.get('wp-json/wc/v3/orders?customer=14531')
+export function fetchAllOrder (id) {
+  return apiClient.get(`wp-json/wc/v3/orders?customer=${id}`)
 }

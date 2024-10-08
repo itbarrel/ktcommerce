@@ -13,6 +13,8 @@ const OrderListingScreen = () => {
         const id = await getId()
         if (id) {
           const response = await fetchAllOrder(id)
+          console.log(response, '>>>>>>>>..')
+
           setOrder(response)
         }
       } catch (error) {

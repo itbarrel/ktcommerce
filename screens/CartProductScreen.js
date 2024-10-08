@@ -12,6 +12,7 @@ const CartProductScreen = ({ product }) => {
   const { id, price, name } = product
   const imageUrl = product?.images?.[0]?.src || ''
   const navigation = useNavigation()
+  const contentToDisplay = product.description ? product.description : product.short_description
   const CartNavigate = () => {
     navigation.navigate('CartListing')
   }
@@ -89,7 +90,7 @@ const CartProductScreen = ({ product }) => {
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.text_container}>
-            <Text style={styles.text}>Orange Summer</Text>
+            <Text style={styles.text}>{product?.yoast_head_json?.title.split(' ').slice(0, 7).join(' ')}...</Text>
             <Text style={styles.text_price}>DKK :{product.price}</Text>
           </View>
           <View style={styles.inner_container}>
@@ -148,12 +149,12 @@ const CartProductScreen = ({ product }) => {
             </View>
             <View>
               <View>
-                {product.description && (
+                {contentToDisplay && (
                   <>
                     <Text style={styles.inner_text}>Description:</Text>
                     <RenderHTML
                       contentWidth={width}
-                      source={{ html: product.description }}
+                      source={{ html: contentToDisplay }}
                       baseStyle={styles.htmlContent}
                     />
                   </>
@@ -192,7 +193,8 @@ const styles = StyleSheet.create({
 
   text: {
     fontSize: 20,
-    color: '#7A8D9C'
+    color: '#7A8D9C',
+    width: 200
   },
   text_price: {
     fontSize: 20,

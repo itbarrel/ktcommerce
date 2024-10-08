@@ -1,13 +1,15 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, Dimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import RenderHTML from 'react-native-render-html'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { Card } from 'react-native-paper'
 
 const ProductCard = ({ item }) => {
   const navigation = useNavigation()
+  const { width } = Dimensions.get('window')
 
   const handlePress = () => {
     navigation.navigate('ProductDetailScreen', { id: item.id })
@@ -27,14 +29,16 @@ const ProductCard = ({ item }) => {
             </View>
             <View style={styles.textSection}>
               <View style={styles.icon}>
-                <Text style={styles.text1}>
-                  {item.name}
-                </Text>
-                <Icon
+                <RenderHTML
+                  contentWidth={width}
+                  source={{ html: item.name }}
+                  baseStyle={styles.text1}
+                />
+                {/* <Icon
                   name='hearto'
                   size={15}
                   color='black'
-                />
+                /> */}
               </View>
               <Text style={styles.text2}>
                 DK {item.price}/-

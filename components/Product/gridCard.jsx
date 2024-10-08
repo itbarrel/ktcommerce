@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import Icon from 'react-native-vector-icons/AntDesign'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 const GridProductCard = ({ item }) => {
   const navigation = useNavigation()
@@ -22,11 +23,26 @@ const GridProductCard = ({ item }) => {
             resizeMode="center"
           />
         </View>
+        <View>
+          <Text style={{ color: 'black' }}>
+            {item.name.split(' ').slice(0, 3).join(' ')}...
+          </Text>
+        </View>
         <View style={styles.rating_container}>
 
-          <View style={styles.price}>
-            <Text style={{ color: 'black', fontWeight: '500' }}>DKK {item.price}</Text>
+          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: 140, margin: 2 }}>
+            <View style={styles.price}>
+              <Text style={{ color: 'black', fontWeight: '500' }}>DKK {item.price}</Text>
+            </View>
+            <View style={styles.shopping_cart} >
+              <Icon
+                name='shoppingcart'
+                size={18}
+                color='black'
+              />
+            </View>
           </View>
+
         </View>
       </View>
     </TouchableOpacity>
@@ -64,7 +80,7 @@ const styles = StyleSheet.create({
     width: moderateScale(150)
   },
   price: {
-    margin: moderateScale(8)
+    margin: moderateScale(2)
   }
 
 })

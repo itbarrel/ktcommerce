@@ -7,7 +7,7 @@ import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { CreateOrder, fetchAllCoupons } from '../services/order'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { WebView } from 'react-native-webview'
-import { getId, setItem, getItem } from '../utils/storage'
+import { getId } from '../utils/storage'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 
@@ -22,10 +22,27 @@ const PaymentScreen = (props) => {
   const isEmptyObject = (obj) => Object.keys(obj).length === 0
   const checkItem = props.route.params.allItems
   const userDetail = props.route.params.userDetail
-  console.log(userDetail, '.........................')
 
   const [user, setUser] = useState({})
-  console.log(user, 'hhhhhhhhhhhhhhhhhhhhhhhh')
+  const [storedUser, setStoredUser] = useState(null)
+
+  useEffect(() => {
+    const fetchStoredUser = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('user')
+        if (userData !== null) {
+          setStoredUser(JSON.parse(userData)) // Parse and set the user data to state
+          console.log('Retrieved user data:', JSON.parse(userData))
+        } else {
+          console.log('No user data found')
+        }
+      } catch (error) {
+        console.error('Error retrieving user data:', error)
+      }
+    }
+
+    fetchStoredUser()
+  }, [])
 
   const [initialValues, setInitialValues] = useState({
     first_name: '',
@@ -39,11 +56,14 @@ const PaymentScreen = (props) => {
     city: '',
     country: ''
   })
+
   useEffect(() => {
     if (userDetail?.billing) {
-      setInitialValues(userDetail?.billing)
+      setInitialValues(userDetail.billing)
+    } else if (storedUser) {
+      setInitialValues(storedUser)
     }
-  }, [userDetail?.billing])
+  }, [userDetail?.billing, storedUser])
 
   const validationSchema = Yup.object().shape({
     first_name: Yup.string().required('First name is required!'),
@@ -87,6 +107,7 @@ const PaymentScreen = (props) => {
     }
     setInitialValues({})
   }
+
   const handleEditPress = () => {
     setInitialValues(user)
   }
@@ -146,8 +167,6 @@ const PaymentScreen = (props) => {
         // set_paid: true
       }
       const response = await CreateOrder(payload)
-      console.log(response, '..............')
-
       setPaymentUrl(response.payment_url)
       setShowWebView(true)
     } catch (error) {

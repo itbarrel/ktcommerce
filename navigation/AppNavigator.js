@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Image, View, StyleSheet, Text } from 'react-native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+
+import { Image, View, StyleSheet, Text, ActivityIndicator } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { verticalScale } from 'react-native-size-matters'
-import { useNavigation } from '@react-navigation/native'
+
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import SplashScreen from '../screens/SplashScreen'
 import SignUpScreen from '../screens/SignupScreen'
@@ -14,6 +16,7 @@ import ProductListing from '../components/Product'
 import LoginScreen from '../screens/LoginScreen'
 import CartCard from '../components/Cart/card'
 import GridProductCard from '../components/Product/gridCard'
+import VarisationDetailScreen from '../screens/VarisationDetailScreen'
 import CartCardListing from '../components/Cart'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import PaymentScreen from '../screens/PaymentScreen'
@@ -26,8 +29,8 @@ import { getId } from '../utils/storage'
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
 const TabNavigator = () => {
-  const [id, setId] = useState(null) // Use state to store the ID
-  console.log(id, 'ffffffffffff')
+  const [id, setId] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   const navigation = useNavigation()
   const navigateCartscreen = () => {
@@ -36,22 +39,34 @@ const TabNavigator = () => {
   const handleLogout = async () => {
     try {
       await AsyncStorage.clear()
+      setId(null) // Set id to null before navigating
       navigation.navigate('Home')
     } catch (error) {
+      console.error('Error logging out:', error)
     }
   }
-  useEffect(() => {
-    const fetchId = async () => {
-      try {
-        const fetchedId = await getId() // Assuming getId is an async function
-        setId(fetchedId) // Store the ID in state
-      } catch (error) {
-        console.error('Error fetching ID:', error)
+  useFocusEffect(
+    useCallback(() => {
+      const fetchId = async () => {
+        try {
+          const fetchedId = await getId()
+          console.log('Fetched ID on focus:', fetchedId)
+          setId(fetchedId)
+        } catch (error) {
+          console.error('Error fetching ID:', error)
+        } finally {
+          setLoading(false)
+        }
       }
-    }
 
-    fetchId()
-  }, [])
+      fetchId()
+    }, [])
+  )
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />
+  }
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -97,9 +112,15 @@ const TabNavigator = () => {
                 style={styles.logo}
                 resizeMode="contain"
               />
-              <TouchableOpacity onPress={handleLogout}>
-                <AntDesign name="logout" size={20} color="#000" style={styles.icon} />
-              </TouchableOpacity>
+              {
+                id !== null
+                  ? (
+                    <TouchableOpacity onPress={handleLogout}>
+                      <AntDesign name="logout" size={20} color="#000" style={styles.icon} />
+                    </TouchableOpacity>
+                  )
+                  : null
+              }
             </View>
           )
         }}
@@ -131,7 +152,10 @@ const TabNavigator = () => {
 
 const AppNavigator = () => {
   const [isModalVisible, setModalVisible] = useState(false)
-
+  const navigation = useNavigation()
+  const navigateCartscreen = () => {
+    navigation.navigate('CartListing')
+  }
   const toggleModal = () => {
     setModalVisible(!isModalVisible)
   }
@@ -177,6 +201,7 @@ const AppNavigator = () => {
         }}
       />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+      <Stack.Screen name="VarisationDetailScreen" component={VarisationDetailScreen} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="OrderScreen" component={OrderListingScreen} />
       <Stack.Screen name="CartListing" component={CartCardListing}
@@ -196,12 +221,15 @@ const AppNavigator = () => {
         component={PaymentScreen}
         options={{
           headerTitle: () => (
-            <View style={styles.container}>
+            <View style={styles.container1}>
               <Image
                 source={require('../assets/images/logo_sort.png')}
                 style={styles.logo}
                 resizeMode="contain"
               />
+              <TouchableOpacity onPress={navigateCartscreen}>
+                <AntDesign name="shoppingcart" size={20} color="#000" style={styles.icon} />
+              </TouchableOpacity>
             </View>
           )
         }}
@@ -211,12 +239,15 @@ const AppNavigator = () => {
         component={ProductDetailScreen}
         options={{
           headerTitle: () => (
-            <View style={styles.container}>
+            <View style={styles.container1}>
               <Image
                 source={require('../assets/images/logo_sort.png')}
                 style={styles.logo}
                 resizeMode="contain"
               />
+              <TouchableOpacity onPress={navigateCartscreen}>
+                <AntDesign name="shoppingcart" size={20} color="#000" style={styles.icon} />
+              </TouchableOpacity>
             </View>
           )
         }}
@@ -229,6 +260,13 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-between',
     width: verticalScale(310),
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  container1: {
+    justifyContent: 'space-between',
+    width: verticalScale(260),
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row'
