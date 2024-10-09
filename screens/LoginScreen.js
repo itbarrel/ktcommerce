@@ -20,7 +20,7 @@ const LoginScreen = () => {
     try {
       await login({ username: userName, password })
       Alert.alert('Login successful!')
-      navigation.navigate('Home')
+      navigation.navigate('SplashScreen')
     } catch (error) {
       Alert.alert('Login failed', 'Invalid username or password')
     }

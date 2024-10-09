@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
@@ -16,7 +16,7 @@ import ProductListing from '../components/Product'
 import LoginScreen from '../screens/LoginScreen'
 import CartCard from '../components/Cart/card'
 import GridProductCard from '../components/Product/gridCard'
-import VarisationDetailScreen from '../screens/VarisationDetailScreen'
+import VariationDetailScreen from '../screens/VariationDetailScreen'
 import CartCardListing from '../components/Cart'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import PaymentScreen from '../screens/PaymentScreen'
@@ -79,6 +79,8 @@ const TabNavigator = () => {
             iconName = 'settings'
           } else if (route.name === 'Profile') {
             iconName = 'person'
+          } else if (route.name === 'LoginScreen') {
+            iconName = 'person'
           }
           // const iconName = iconMapping[route.name]
           return <Icon name={iconName} size={size} color={color} />
@@ -103,29 +105,32 @@ const TabNavigator = () => {
           headerLeft: () => null
         }}
       />
-      <Tab.Screen name="Profile" component={ProfileScreen}
-        options={{
-          headerTitle: () => (
-            <View style={styles.container}>
-              <Image
-                source={require('../assets/images/logo_sort.png')}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-              {
-                id !== null
-                  ? (
-                    <TouchableOpacity onPress={handleLogout}>
-                      <AntDesign name="logout" size={20} color="#000" style={styles.icon} />
-                    </TouchableOpacity>
-                  )
-                  : null
-              }
-            </View>
-          )
-        }}
+      {id
+        ? <Tab.Screen name="Profile" component={ProfileScreen}
+          options={{
+            headerTitle: () => (
+              <View style={styles.container}>
+                <Image
+                  source={require('../assets/images/logo_sort.png')}
+                  style={styles.logo}
+                  resizeMode="contain"
+                />
+                {
+                  id !== null
+                    ? (
+                      <TouchableOpacity onPress={handleLogout}>
+                        <AntDesign name="logout" size={20} color="#000" style={styles.icon} />
+                      </TouchableOpacity>
+                    )
+                    : null
+                }
+              </View>
+            )
+          }}
 
-      />
+        />
+        : <Tab.Screen name="LoginScreen" component={LoginScreen}/>
+      }
       {/* {id && (
         <Tab.Screen
           name="Profile"
@@ -201,9 +206,34 @@ const AppNavigator = () => {
         }}
       />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-      <Stack.Screen name="VarisationDetailScreen" component={VarisationDetailScreen} />
+      <Stack.Screen name="VariationDetailScreen" component={VariationDetailScreen}
+        options={{
+          headerTitle: () => (
+            <View style={styles.container}>
+              <Image
+                source={require('../assets/images/logo_sort.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          )
+        }}
+      />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="OrderScreen" component={OrderListingScreen} />
+      <Stack.Screen name="OrderScreen" component={OrderListingScreen}
+        options={{
+          headerTitle: () => (
+            <View style={styles.container}>
+              <Image
+                source={require('../assets/images/logo_sort.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          )
+        }}
+
+      />
       <Stack.Screen name="CartListing" component={CartCardListing}
         options={{
           headerTitle: () => (

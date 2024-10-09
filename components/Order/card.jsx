@@ -2,25 +2,12 @@ import React from 'react'
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
-import { useNavigation } from '@react-navigation/native'
 import { Card } from 'react-native-paper'
 
-const OrderCard = ({ item }) => {
-  const productId = item?.line_items[0]?.product_id
-  const variationId = item?.line_items[0]?.variation_id
-
+const OrderCard = ({ item, onPress }) => {
   const OrderPic = item.line_items[0].image.src
-  const navigation = useNavigation()
-
-  const handlePress = () => {
-    navigation.navigate('VarisationDetailScreen', {
-      productId,
-      variationId
-    })
-  }
-
   return (
-    <TouchableOpacity onPress={handlePress} >
+    <TouchableOpacity onPress={onPress} >
       <View style={styles.container}>
         <Card style={styles.card}>
           <View style={styles.content}>

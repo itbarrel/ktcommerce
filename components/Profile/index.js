@@ -41,8 +41,6 @@ const ProfileCard = () => {
         setLoading(true)
         try {
           const id = await getId()
-          console.log(id, '......................')
-
           if (id) {
             const response = await fetchMyInformation(id)
             setUser(response)
