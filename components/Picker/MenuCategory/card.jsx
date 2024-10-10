@@ -83,7 +83,8 @@ const styles = StyleSheet.create({
   invisibleButton: {
     padding: moderateScale(10),
     backgroundColor: 'gray',
-    borderRadius: 8
+    borderRadius: 8,
+    margin: 5
 
   }
 })

@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, Text, Image, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import CrossIcon from 'react-native-vector-icons/Entypo'
 import WalletIcon from 'react-native-vector-icons/AntDesign'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import { CreateOrder, fetchAllCoupons } from '../services/order'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { WebView } from 'react-native-webview'
+import Modal from 'react-native-modal'
 import { getId } from '../utils/storage'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
@@ -22,6 +24,7 @@ const PaymentScreen = (props) => {
   const isEmptyObject = (obj) => Object.keys(obj).length === 0
   const checkItem = props.route.params.allItems
   const userDetail = props.route.params.userDetail
+  const [isModalVisible, setModalVisible] = useState(false)
 
   const [user, setUser] = useState({})
   const [storedUser, setStoredUser] = useState(null)
@@ -59,11 +62,18 @@ const PaymentScreen = (props) => {
 
   useEffect(() => {
     if (userDetail?.billing) {
+      setUser(userDetail.billing)
       setInitialValues(userDetail.billing)
     } else if (storedUser) {
       setInitialValues(storedUser)
+      setUser(storedUser)
+    } else {
+      setModalVisible(true)
     }
   }, [userDetail?.billing, storedUser])
+  const handleClose = () => {
+    setModalVisible(false)
+  }
 
   const validationSchema = Yup.object().shape({
     first_name: Yup.string().required('First name is required!'),
@@ -100,6 +110,7 @@ const PaymentScreen = (props) => {
 
     }
     setUser(updatedData)
+    setModalVisible(false)
     try {
       await AsyncStorage.setItem('user', JSON.stringify(updatedData))
     } catch (error) {
@@ -109,6 +120,7 @@ const PaymentScreen = (props) => {
   }
 
   const handleEditPress = () => {
+    setModalVisible(true)
     setInitialValues(user)
   }
   const totalPrice = (props.route.params.totalProductPrice)
@@ -160,7 +172,7 @@ const PaymentScreen = (props) => {
             method_title: 'Shipmondo'
           }
         ],
-        // customer_id: 14529,
+        // customer_id: 14541,
         coupon_lines: [couponInputValue ?? []].flat(),
         payment_method: 'quickpay',
         payment_method_title: 'quickpay'
@@ -215,116 +227,141 @@ const PaymentScreen = (props) => {
             </View>
             <TouchableOpacity onPress={handleEditPress}>
               <View>
-                <Text style={styles.black_text}>Edit</Text>
+                <CrossIcon
+                  name='pencil'
+                  size={moderateScale(18)}
+                  color="#7A8D9C"
+                />
               </View>
             </TouchableOpacity>
           </View>
           <View style={{ marginLeft: moderateScale(270), padding: 10 }}>
           </View>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            enableReinitialize={true}
-            onSubmit={(values) => handleSubmit(values)}
+          <Modal
+            isVisible={isModalVisible}
+            onBackdropPress={() => setModalVisible(false)}
+            style={styles.modalContainer}
           >
-            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-              <View style={styles.shipping_container}>
-                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      style={styles.name_input}
-                      placeholderTextColor="#7A8D9C"
-                      placeholder="First Name"
-                      onChangeText={handleChange('first_name')}
-                      onBlur={handleBlur('first_name')}
-                      value={values?.first_name}
-                    />
-                    {touched.first_name && errors.first_name && (
-                      <Text style={styles.errorText}>{errors.first_name}</Text>
-                    )}
-                  </View>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      style={styles.name_input}
-                      placeholderTextColor="#7A8D9C"
-                      placeholder="Sure Name"
-                      onChangeText={handleChange('last_name')}
-                      onBlur={handleBlur('last_name')}
-                      value={values?.last_name}
-                    />
-                    {touched.last_name && errors.last_name && (
-                      <Text style={styles.errorText}>{errors.last_name}</Text>
-                    )}
-                  </View>
-                </View>
-                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      style={styles.name_input}
-                      placeholderTextColor="#7A8D9C"
-                      placeholder="City"
-                      onChangeText={handleChange('city')}
-                      onBlur={handleBlur('city')}
-                      value={values?.city}
-                    />
-                    {touched.city && errors.city && (
-                      <Text style={styles.errorText}>{errors.city}</Text>
-                    )}
-                  </View>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      style={styles.name_input}
-                      placeholderTextColor="#7A8D9C"
-                      keyboardType='numeric'
-                      placeholder="PostCode"
-                      onChangeText={handleChange('postcode')}
-                      onBlur={handleBlur('postcode')}
-                      value={values?.postcode}
-                    />
-                    {touched.postcode && errors.postcode && (
-                      <Text style={styles.errorText}>{errors.postcode}</Text>
-                    )}
-                  </View>
+            <View style={styles.modalContent}>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={(values) => handleSubmit(values)}
+              >
+                {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                  <>
+                    <View style={styles.Icon_container}>
+                      <View>
+                        <TouchableOpacity onPress={handleClose}>
+                          <CrossIcon
+                            name='cross'
+                            size={18}
+                            color='black'
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                    <View style={styles.shipping_container}>
+                      <View style={{ display: 'flex', flexDirection: 'row' }}>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            style={styles.name_input}
+                            placeholderTextColor="#7A8D9C"
+                            placeholder="First Name"
+                            onChangeText={handleChange('first_name')}
+                            onBlur={handleBlur('first_name')}
+                            value={values.first_name}
+                          />
+                          {touched.first_name && errors.first_name && (
+                            <Text style={styles.errorText}>{errors.first_name}</Text>
+                          )}
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            style={styles.name_input}
+                            placeholderTextColor="#7A8D9C"
+                            placeholder="Sure Name"
+                            onChangeText={handleChange('last_name')}
+                            onBlur={handleBlur('last_name')}
+                            value={values.last_name}
+                          />
+                          {touched.last_name && errors.last_name && (
+                            <Text style={styles.errorText}>{errors.last_name}</Text>
+                          )}
+                        </View>
+                      </View>
 
-                </View>
-                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                  <View style={styles.inputContainer}>
-                    <TextInput
-                      style={styles.address_input}
-                      placeholderTextColor="#7A8D9C"
-                      keyboardType='numeric'
-                      placeholder="Contact"
-                      onChangeText={handleChange('phone')}
-                      onBlur={handleBlur('phone')}
-                      value={values?.phone}
-                    />
-                    {touched.phone && errors.phone && (
-                      <Text style={styles.errorText}>{errors.phone}</Text>
-                    )}
-                  </View>
-                </View>
-                <TextInput
-                  style={styles.address_input}
-                  placeholderTextColor="#7A8D9C"
-                  placeholder="Address Line 1"
-                  multiline={true}
-                  onChangeText={handleChange('address_1')}
-                  onBlur={handleBlur('address_1')}
-                  value={values?.address_1}
-                />
-                {touched.address_1 && errors.address_1 && (
-                  <Text style={styles.errorText}>{errors.address_1}</Text>
+                      <View style={{ display: 'flex', flexDirection: 'row' }}>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            style={styles.name_input}
+                            placeholderTextColor="#7A8D9C"
+                            placeholder="City"
+                            onChangeText={handleChange('city')}
+                            onBlur={handleBlur('city')}
+                            value={values.city}
+                          />
+                          {touched.city && errors.city && (
+                            <Text style={styles.errorText}>{errors.city}</Text>
+                          )}
+                        </View>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            style={styles.name_input}
+                            placeholderTextColor="#7A8D9C"
+                            keyboardType="numeric"
+                            placeholder="PostCode"
+                            onChangeText={handleChange('postcode')}
+                            onBlur={handleBlur('postcode')}
+                            value={values.postcode}
+                          />
+                          {touched.postcode && errors.postcode && (
+                            <Text style={styles.errorText}>{errors.postcode}</Text>
+                          )}
+                        </View>
+                      </View>
+
+                      <View style={{ display: 'flex', flexDirection: 'row' }}>
+                        <View style={styles.inputContainer}>
+                          <TextInput
+                            style={styles.address_input}
+                            placeholderTextColor="#7A8D9C"
+                            keyboardType="numeric"
+                            placeholder="Contact"
+                            onChangeText={handleChange('phone')}
+                            onBlur={handleBlur('phone')}
+                            value={values.phone}
+                          />
+                          {touched.phone && errors.phone && (
+                            <Text style={styles.errorText}>{errors.phone}</Text>
+                          )}
+                        </View>
+                      </View>
+
+                      <TextInput
+                        style={styles.address_input}
+                        placeholderTextColor="#7A8D9C"
+                        placeholder="Address Line 1"
+                        multiline={true}
+                        onChangeText={handleChange('address_1')}
+                        onBlur={handleBlur('address_1')}
+                        value={values.address_1}
+                      />
+                      {touched.address_1 && errors.address_1 && (
+                        <Text style={styles.errorText}>{errors.address_1}</Text>
+                      )}
+
+                      <TouchableOpacity onPress={handleSubmit}>
+                        <View style={styles.Button}>
+                          <Text style={{ color: 'black' }}>Submit</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </>
                 )}
-
-                <TouchableOpacity onPress={handleSubmit}>
-                  <View style={styles.Button}>
-                    <Text style={{ color: 'black' }}>Submit</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            )}
-          </Formik>
-
+              </Formik>
+            </View>
+          </Modal>
           <View style={styles.line_container}>
             <View style={styles.line} />
           </View>
@@ -383,7 +420,7 @@ const PaymentScreen = (props) => {
           </View>
         </View>
         <View style={styles.container}>
-          <View style={styles.inner_container}>
+          {/* <View style={styles.inner_container}>
             <View style={styles.location}>
               <Text style={styles.black_text}>
                 Payment Method
@@ -395,17 +432,16 @@ const PaymentScreen = (props) => {
                 size={moderateScale(18)}
                 color='#7A8D9C'
               />
-              <Text style={styles.pay_text}>Quick Pay</Text>
-              {/* <WalletIcon
+              <WalletIcon
                 name='rightcircle'
                 size={moderateScale(18)}
                 color='#7A8D9C'
-              /> */}
+              />
             </View>
-          </View>
-          <View style={styles.line_container}>
+          </View> */}
+          {/* <View style={styles.line_container}>
             <View style={styles.line} />
-          </View>
+          </View> */}
           <View style={styles.inner_container}>
             <View style={styles.location}>
               <Text style={styles.black_text}>
@@ -559,7 +595,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     color: 'black',
     width: 150,
-    margin: 5,
+    margin: 4,
+    paddingLeft: 15,
     marginBottom: 15
   },
 
@@ -572,7 +609,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     color: 'black',
     height: moderateScale(43),
-    width: 150
+    width: 120,
+    marginLeft: 10
   },
 
   disabledButton: {
@@ -609,8 +647,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    height: 200,
-    marginTop: 20
+    height: 480,
+    marginTop: 20,
+    borderRadius: 8
   },
   Modal: {
     display: 'flex',
@@ -631,6 +670,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  Icon_container: {
+    marginLeft: 270
   },
   buttonContainer: {
     width: '95%',
@@ -684,8 +726,7 @@ const styles = StyleSheet.create({
   text_container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%'
+    alignItems: 'center'
   },
   inner_text: {
     fontSize: 15,

@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { FlatList, View, ActivityIndicator, StyleSheet, Text } from 'react-native'
+import { FlatList, View, ActivityIndicator } from 'react-native'
 import { fetchProducts } from '../../services/product'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import GridProductCard from './gridCard'
 import ProductCard from './card'
 
@@ -58,42 +57,16 @@ const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
       numColumns={viewMode === 'grid' ? 2 : 1}
       key={viewMode === 'grid' ? 'grid' : 'list'}
       ListFooterComponent={
-        products.length > 0 && (
+        loading && (
           <View style={{ padding: 20 }}>
-            {loading
-              ? (
-                <ActivityIndicator size="large" color="#0000ff" />
-              )
-              : (
-                <TouchableOpacity
-                  style={[styles.button, noMoreProducts && styles.disabledButton]}
-                  onPress={handleLoadMore}
-                  disabled={noMoreProducts}
-                >
-                  <Text style={styles.buttonText}>{noMoreProducts ? 'No More Products' : 'Show More'}</Text>
-                </TouchableOpacity>
-              )}
+            <ActivityIndicator size="large" color="#0000ff" />
           </View>
         )
       }
+      onEndReached={handleLoadMore}
+      onEndReachedThreshold={0.5}
     />
   )
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#7BCFE9',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center'
-  },
-  disabledButton: {
-    backgroundColor: '#cccccc'
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16
-  }
-})
 
 export default ProductListing
