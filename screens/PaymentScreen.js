@@ -89,7 +89,6 @@ const PaymentScreen = (props) => {
       try {
         const id = await getId()
         console.log(id, 'idddddddddddddddddddd')
-
         const couponResponse = await fetchAllCoupons()
         setCoupons(couponResponse)
       } catch (error) {

@@ -18,8 +18,6 @@ const ProfileCard = () => {
     useCallback(() => {
       const checkLoginStatus = async () => {
         const token = await getToken()
-        console.log(token, 'token')
-
         if (token) {
           setIsLoggedIn(true)
         } else {
