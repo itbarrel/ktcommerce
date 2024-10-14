@@ -65,7 +65,7 @@ const ProductListingScreen = ({ isModalVisible, setModalVisible, toggleModal, cl
       </View>
 
       <View style={styles.productContainer}>
-        <ProductListing categoryId={categoryId} searchQuery={searchQuery} viewMode={viewMode} />
+        <ProductListing categoryId={categoryId} searchQuery={searchQuery} viewMode={viewMode} onSearch={(text) => setSearchQuery(text)} />
       </View>
 
       <Modal

@@ -1,71 +1,63 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { FlatList, View, ActivityIndicator } from 'react-native'
-import { fetchProducts } from '../../services/product'
+import React, { useContext, useState, useEffect } from 'react'
+import { FlatList, View, ActivityIndicator, Text } from 'react-native'
 import GridProductCard from './gridCard'
+import { ProductContext } from '../../Provider/product'
 import ProductCard from './card'
 
-const ProductListing = ({ categoryId, searchQuery, viewMode }) => {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [noMoreProducts, setNoMoreProducts] = useState(false)
-  const pageRef = useRef(1)
-
-  const fetchData = async (page, reset = false) => {
-    try {
-      setLoading(true)
-      const res = await fetchProducts({ category: categoryId, search: searchQuery, page })
-
-      if (res.length === 0) {
-        setNoMoreProducts(true)
-      }
-
-      const newProducts = res.filter(
-        (newProduct) => !products.some((product) => product.id === newProduct.id)
-      )
-
-      if (reset) {
-        setProducts(newProducts)
-      } else {
-        setProducts((prevProducts) => [...prevProducts, ...newProducts])
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+const ProductListing = ({ searchQuery, viewMode, categoryId }) => {
+  const { products, loading, handleLoadMore, fetchAllProducts } = useContext(ProductContext)
+  const [filteredProducts, setFilteredProducts] = useState([])
 
   useEffect(() => {
-    setProducts([])
-    setNoMoreProducts(false)
-    pageRef.current = 1
-    fetchData(pageRef.current, true)
-  }, [categoryId, searchQuery])
+    fetchAllProducts(1, true, categoryId)
+  }, [categoryId])
 
-  const handleLoadMore = () => {
-    if (!noMoreProducts && !loading) {
-      pageRef.current += 1
-      fetchData(pageRef.current)
-    }
-  }
+  useEffect(() => {
+    const filtered = products.filter((product) => {
+      const nameMatches = product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      const idMatches = `${product.id}`.includes(searchQuery)
+      const optionsMatch = product.attributes.some((attribute) =>
+
+        attribute.options.some((option) =>
+          option.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      )
+
+      return nameMatches || idMatches || optionsMatch
+    })
+
+    setFilteredProducts(filtered)
+  }, [products, searchQuery])
 
   return (
-    <FlatList
-      data={products}
-      renderItem={({ item }) => (viewMode === 'grid' ? <GridProductCard item={item} /> : <ProductCard item={item} />)}
-      keyExtractor={(item) => item.id.toString()}
-      numColumns={viewMode === 'grid' ? 2 : 1}
-      key={viewMode === 'grid' ? 'grid' : 'list'}
-      ListFooterComponent={
-        loading && (
-          <View style={{ padding: 20 }}>
-            <ActivityIndicator size="large" color="#0000ff" />
+    <View style={{ flex: 1 }}>
+      {filteredProducts.length === 0 && !loading
+        ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 18, color: 'gray' }}>Product Not Available</Text>
           </View>
         )
-      }
-      onEndReached={handleLoadMore}
-      onEndReachedThreshold={0.5}
-    />
+        : (
+          <FlatList
+            data={filteredProducts}
+            renderItem={({ item }) =>
+              viewMode === 'grid' ? <GridProductCard item={item} /> : <ProductCard item={item} />
+            }
+            keyExtractor={(item) => item.id.toString()}
+            numColumns={viewMode === 'grid' ? 2 : 1}
+            key={viewMode === 'grid' ? 'grid' : 'list'}
+            ListFooterComponent={
+              loading && (
+                <View style={{ padding: 20 }}>
+                  <ActivityIndicator size="large" color="#0000ff" />
+                </View>
+              )
+            }
+            onEndReached={() => handleLoadMore(categoryId)}
+            onEndReachedThreshold={0.5}
+          />
+        )}
+    </View>
   )
 }
 

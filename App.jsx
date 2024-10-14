@@ -3,6 +3,7 @@ import AppNavigator from './navigation/AppNavigator'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import { Provider as PaperProvider } from 'react-native-paper'
 import { CartProvider } from './Provider/cart'
+import { ProductProvider } from './Provider/product'
 
 const theme = {
   ...DefaultTheme,
@@ -15,11 +16,14 @@ const theme = {
 function App () {
   return (
     <NavigationContainer theme={theme}>
-      <PaperProvider>
-        <CartProvider>
-          <AppNavigator />
-        </CartProvider>
-      </PaperProvider>
+      <ProductProvider>
+        <PaperProvider>
+          <CartProvider>
+            <AppNavigator />
+          </CartProvider>
+        </PaperProvider>
+      </ProductProvider>
+
     </NavigationContainer>
   )
 }
