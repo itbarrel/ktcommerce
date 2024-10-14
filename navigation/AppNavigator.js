@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
-import { Image, View, StyleSheet, Text, ActivityIndicator } from 'react-native'
+import { Image, View, StyleSheet, ActivityIndicator } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { verticalScale } from 'react-native-size-matters'
 
@@ -12,6 +12,8 @@ import SplashScreen from '../screens/SplashScreen'
 import SignUpScreen from '../screens/SignupScreen'
 import HomeScreen from '../screens/Home/HomeScreen'
 import ProductListingScreen from '../screens/Product/ProductListingScreen'
+import Account from '../screens/Account'
+import Address from '../screens/Address'
 import ProductListing from '../components/Product'
 import LoginScreen from '../screens/LoginScreen'
 import CartCard from '../components/Cart/card'
@@ -221,6 +223,34 @@ const AppNavigator = () => {
       />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="OrderScreen" component={OrderListingScreen}
+        options={{
+          headerTitle: () => (
+            <View style={styles.container}>
+              <Image
+                source={require('../assets/images/logo_sort.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          )
+        }}
+
+      />
+      <Stack.Screen name="Address" component={Address}
+        options={{
+          headerTitle: () => (
+            <View style={styles.container}>
+              <Image
+                source={require('../assets/images/logo_sort.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+          )
+        }}
+
+      />
+      <Stack.Screen name="Account" component={Account}
         options={{
           headerTitle: () => (
             <View style={styles.container}>

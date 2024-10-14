@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { fetchMyInformation } from '../../services/user'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
@@ -9,6 +9,7 @@ import DocumentIcon from 'react-native-vector-icons/Entypo'
 
 const ProfileCard = () => {
   const [user, setUser] = useState('')
+
   const [loading, setLoading] = useState(false)
   const navigation = useNavigation()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -34,6 +35,12 @@ const ProfileCard = () => {
   }
   const handleOrder = () => {
     navigation.navigate('OrderScreen')
+  }
+  const handleNavigate = () => {
+    navigation.navigate('Address', { user })
+  }
+  const handleNavigateAccount = () => {
+    navigation.navigate('Account', { user })
   }
   useFocusEffect(
     useCallback(() => {
@@ -85,7 +92,7 @@ const ProfileCard = () => {
       </View>
       <View style={styles.card_container}>
         <View style={styles.card_baar_hold}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleNavigateAccount}>
             <View style={styles.card_baar}>
               <View>
                 <Icon
@@ -97,7 +104,7 @@ const ProfileCard = () => {
               <Text style={styles.text}>Account</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleNavigate}>
             <View style={styles.card_baar}>
               <View>
                 <LocationIcon
